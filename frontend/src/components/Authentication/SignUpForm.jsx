@@ -77,7 +77,7 @@ function SignUpForm() {
     
 
     try{
-      const {data: user} = await axios.post("http://localhost:3000/api/workouts/signup", formData);
+      const {data: user} = await axios.post("http://localhost:3000/api/auth/signup", formData);
       toast({
         title: "Registration successful!",
         status: "success",

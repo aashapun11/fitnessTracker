@@ -47,7 +47,7 @@ import {
           };
 
           // Make the API call
-          const { data } = await axios.put("http://localhost:3000/api/workouts/updateProfile", formData, config);
+          const { data } = await axios.put("http://localhost:3000/api/auth/updateProfile", formData, config);
       
           localStorage.setItem("userInfo", JSON.stringify(data));
       

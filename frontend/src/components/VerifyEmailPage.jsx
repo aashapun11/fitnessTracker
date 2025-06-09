@@ -23,7 +23,7 @@ const VerifyEmailPage = () => {
 
     const verifyEmail = async () => {
       try {
-        await axios.get(`http://localhost:3000/api/workouts/verify-email?token=${token}`);
+        await axios.get(`http://localhost:3000/api/auth/verify-email?token=${token}`);
         toast({
           title: "Email verified successfully!",
           status: "success",

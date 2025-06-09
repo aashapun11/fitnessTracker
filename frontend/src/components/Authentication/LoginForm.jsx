@@ -49,7 +49,8 @@ function LoginForm() {
     
 
     try {
-      const {data:response} = await axios.post("http://localhost:3000/api/workouts/login", {
+      
+      const {data:response} = await axios.post("http://localhost:3000/api/auth/login", {
         username,
         password,
       });
@@ -106,7 +107,7 @@ setUser({
   };
   const handleResend = async () => {
     try {
-      await axios.post("http://localhost:3000/api/workouts/resend-verification", {
+      await axios.post("http://localhost:3000/api/auth/resend-verification", {
         username: formData.username,
       });
       toast({

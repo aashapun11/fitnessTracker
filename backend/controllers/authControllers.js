@@ -2,6 +2,8 @@ const User = require('../models/userModel');
 const generateToken = require('../utils/generateToken');
 const {sendVerificationEmail} = require('../utils/sendEmail');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+
 require('dotenv').config();
 
 const authController = {
@@ -73,6 +75,11 @@ const authController = {
         try {
             const { username, password } = req.body;
             const user = await User.findOne({ username });
+            console.log("User found:", user);
+
+           console.log("Entered password:", password);
+console.log("Stored hash:", user.password);
+
             if (!user) {
                 return res.status(401).json({ message: "Invalid username or password" });
               }
@@ -81,6 +88,8 @@ const authController = {
   }
           
               const isMatch = await user.matchPassword(password);
+              console.log("Password match?", isMatch);
+
           
               if (!isMatch) {
                 return res.status(401).json({ message: "Invalid username or password" });
@@ -112,7 +121,66 @@ const authController = {
         } catch (error) {
           res.status(400).json({ message: "Update failed" });
         }
-    }
+    },
+    async forgotPassword(req, res) {
+        try {
+          const { email } = req.body;
+          const user = await User.findOne({ email });
+          if (!user) {
+            return res.status(404).json({ message: "User not found" });
+          }
+          const token = crypto.randomBytes(32).toString("hex");
+          user.resetPasswordToken = token;
+          user.resetPasswordExpires = Date.now() + 600000; // 10 mins
+          await user.save();
+    //      const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+
+    // await sendVerificationEmail({
+    //   to: user.email,
+    //   subject: "Reset Your Password",
+    //   html: `
+    //     <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:20px;">
+    //       <h2>Reset Your Password</h2>
+    //       <p>Click below to reset your password. This link expires in 1 hour.</p>
+    //       <a href="${resetLink}" style="padding:10px 20px;background:#1E74BB;color:#fff;text-decoration:none;border-radius:5px;">Reset Password</a>
+    //     </div>
+    //   `
+    // });
+
+    // res.status(200).json({ message: "Reset link sent to your email" });
+    res.status(200).json({ 
+      token
+     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+},
+ async resetPassword(req, res) {
+  const { token, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+
+    // const salt = await bcrypt.genSalt(10);
+    // user.password = await bcrypt.hash(newPassword, salt);
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+ }
 }
 
 module.exports = authController
