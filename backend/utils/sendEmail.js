@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = async ({to, subject, html}) => {
 
   await transporter.sendMail({
-    from: `"Fitness Tracker" <${process.env.EMAIL_USER}>`,
+    from: `<${process.env.EMAIL_USER}>`,
     to,
     subject,
     html

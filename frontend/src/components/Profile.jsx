@@ -12,23 +12,41 @@ import {
     Button,
   } from "@chakra-ui/react";
   import Navbar from "./Navbar";
-  import { useState } from "react";
+  import { useState, useEffect } from "react";
   import axios from "axios";
   import { useToast } from "@chakra-ui/react";
   import {useNavigate} from "react-router-dom"
+  import { workoutState } from "../Context/WorkoutProvider";
+  
   
   function ProfilePage() {
-    const storedUser = JSON.parse(localStorage.getItem("userInfo"));
+
+    const { user, setUser } = workoutState();
+
     const [formData, setFormData] = useState({
-      name: storedUser?.name || "",
-      email: storedUser?.email || "",
-      weight: storedUser?.weight || "",
-      height: storedUser?.height || "",
-      age: storedUser?.age || "",
-      sex: storedUser?.sex || "",
-    });
+  name: "",
+  email: "",
+  weight: "",
+  height: "",
+  age: "",
+  sex: "",
+});
+
     const toast = useToast();
     const navigate = useNavigate();
+
+     useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        weight: user.weight || "",
+        height: user.height || "",
+        age: user.age || "",
+        sex: user.sex || "",
+      });
+    }
+  }, [user]);
   
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -47,9 +65,22 @@ import {
           };
 
           // Make the API call
-          const { data } = await axios.put("http://localhost:3000/api/auth/updateProfile", formData, config);
+          const { data:response } = await axios.put("http://localhost:3000/api/auth/updateProfile", formData, config);
       
-          localStorage.setItem("userInfo", JSON.stringify(data));
+           const updatedUser = {
+        _id: response._id,
+        name: response.name,
+        username: response.username,
+        email: response.email,
+        age: response.age,
+        height: response.height,
+        weight: response.weight,
+        sex: response.sex,
+      };
+
+      localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
       
           toast({
             title: "Profile updated successfully",

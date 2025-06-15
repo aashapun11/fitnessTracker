@@ -15,7 +15,6 @@ import {
   Link
 } from "@chakra-ui/react";
 import useThemeValues from "../../hooks/useThemeValues"; // Reuse your dark/light mode styling
-import LightMode from "../LightMode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -26,17 +25,16 @@ function SignUpForm() {
   const toast = useToast();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
 
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
     password: "",
-    age: "",
-    height: "",
-    weight: "",
-    sex: "",
+    confirmPassword: "",
+    
   });
 
   const changeHandler = (e) => {
@@ -45,9 +43,10 @@ function SignUpForm() {
 
   const submitHandler = async(e) => {
     e.preventDefault();
-    const { name, username, email, password, age, height, weight, sex } = formData;
 
-    if (!name || !username || !email || !password || !age || !height || !weight || !sex) {
+    const {name, username, email, password, confirmPassword } = formData;
+
+    if ( !name || !username || !email || !password || !confirmPassword ) {
       toast({
         title: "Please fill in all fields.",
         status: "warning",
@@ -65,6 +64,17 @@ function SignUpForm() {
       });
       return;
     }
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords do not match.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      setFormData({ ...formData, password: "", confirmPassword: "" });
+      return;
+    }
     if (!email.includes("@")) {
       toast({
         title: "Please enter a valid email address.",
@@ -77,22 +87,23 @@ function SignUpForm() {
     
 
     try{
-      const {data: user} = await axios.post("http://localhost:3000/api/auth/signup", formData);
+      const { confirmPassword, ...userData } = formData;
+     await axios.post("http://localhost:3000/api/auth/signup", formData);
       toast({
         title: "Registration successful!",
+        description: "Please check your email to verify your account.",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
-      setFormData({
+      
+       setFormData({
         name: "",
         username: "",
         email: "",
         password: "",
-        age: "",
-        height: "",
-        weight: "",
-        sex: "",
+        confirmPassword: "",
+        
       });
       navigate("/login");
       
@@ -108,11 +119,10 @@ function SignUpForm() {
   };
 
   return (
-    <Box p={4} textAlign={"center"}>
-     <LightMode />
+    <Box p={2} textAlign={"center"}>
 
-    <Box p={1} maxW="500px" mx="auto" mt={10} bg={cardBg} borderRadius="2xl" boxShadow="2xl">
-      <Heading textAlign="center" mb={4} color={textColor}>
+    <Box p={4} maxW="500px" mx="auto" bg={cardBg} borderRadius="2xl" boxShadow="2xl">
+      <Heading textAlign="center" mb={2} color={textColor}>
         Sign Up
       </Heading>
       <Text mb={4}>Already have an account? <Link 
@@ -179,66 +189,40 @@ function SignUpForm() {
               variant="ghost"
               _hover={{ bg: "transparent" }}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <FaEye /> : <FaEyeSlash />}
             </Button>
           </InputRightElement>
         </InputGroup>
           </FormControl>
 
-          <FormControl>
-            <FormLabel color={textColor}>Age</FormLabel>
-            <Input
-              name="age"
-              type="number"
-              value={formData.age}
-              onChange={changeHandler}
-              bg={inputBg}
-              color={textColor}
-            />
-          </FormControl>
 
           <FormControl>
-            <FormLabel color={textColor}>Height (cm)</FormLabel>
-            <Input
-              name="height"
-              type="number"
-              value={formData.height}
-              onChange={changeHandler}
-              bg={inputBg}
-              color={textColor}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel color={textColor}>Weight (kg)</FormLabel>
-            <Input
-              name="weight"
-              type="number"
-              value={formData.weight}
-              onChange={changeHandler}
-              bg={inputBg}
-              color={textColor}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel color={textColor}>Sex</FormLabel>
-            <Select
-              name="sex"
-              value={formData.sex}
-              onChange={changeHandler}
-              placeholder="Select sex"
-              bg={inputBg}
-              color={textColor}
+            <FormLabel color={textColor}>Confirm Password</FormLabel>
+            <InputGroup>
+          <Input
+            name="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            bg={inputBg}
+            color={textColor}
+            border="1px solid blackAlpha.300"
+            value={formData.confirmPassword}
+            onChange={changeHandler}
+          />
+          <InputRightElement width="3rem">
+            <Button
+              h="1.75rem"
+              size="sm"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              variant="ghost"
+              _hover={{ bg: "transparent" }}
             >
-              <option style={{ color: "black" }} value="male">
-                Male
-              </option>
-              <option style={{ color: "black" }} value="female">
-                Female
-              </option>
-            </Select>
+              {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
           </FormControl>
+
+         
 
           <Button
             type="submit"

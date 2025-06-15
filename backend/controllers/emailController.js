@@ -21,9 +21,9 @@ const emailController = {
   res.status(200).json({ message: "Email verified successfully!" });
     },
     async resendVerificationEmail(req,res){
-      const { username } = req.body;
+      const { email } = req.body;
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User not found" });
 
     if (user.isVerified) {
@@ -35,7 +35,7 @@ const emailController = {
     user.tokenExpiration = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const verificationLink = `http://localhost:5173/verify-email?token=${token}`;
+    const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
     await sendVerificationEmail({
       to: user.email,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import axios from 'axios'
-import { Toast } from '@chakra-ui/react';
 const WorkoutContext = createContext();
 function WorkoutProvider({children}) {
     const [workouts, setWorkouts] = useState([]);

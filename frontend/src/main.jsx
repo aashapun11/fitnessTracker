@@ -15,6 +15,10 @@ import ProtectedLayout from "./components/ProtectedLayout";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./components/Profile";
 import VerifyEmailPage from "./components/VerifyEmailPage";
+import ForgotPasswordForm from "./components/Authentication/ForgotPasswordForm";
+import ResetPasswordForm from "./components/Authentication/ResetPasswordForm";
+import VerificationPending from "./components/Authentication/VerificationPending";
+import CompleteProfile from "./components/Authentication/CompleteProfile";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -25,6 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       {/* Public route - no WorkoutProvider */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/verification-pending" element={<VerificationPending />} />
 
       {/* Protected routes - wrapped in WorkoutProvider */}
       <Route element={
@@ -34,8 +39,18 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       }>
          <Route path="/signup" element={<SignUpForm />} />
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+            <Route path="/reset-password" element={<ResetPasswordForm />} />
+
+
 
             {/* Protected Routes */}
+            <Route path="/complete-profile" element={
+              <PrivateRoute>
+                <CompleteProfile />
+              </PrivateRoute>
+            } />
+            
             <Route path="/workoutForm" element={
               <PrivateRoute>
                 <WorkoutForm />

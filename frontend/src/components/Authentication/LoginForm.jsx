@@ -26,7 +26,6 @@ function LoginForm() {
   const navigate = useNavigate();
   const { setUser } = workoutState();
   const [showPassword, setShowPassword] = useState(false);
-    const [showResend, setShowResend] = useState(false);
 
 
   const handleChange = (e) => {
@@ -54,31 +53,32 @@ function LoginForm() {
         username,
         password,
       });
-    
-      localStorage.setItem("token", response.token);      
+          // Handle success: save token/user and redirect
 
-      localStorage.setItem("userInfo", JSON.stringify({
-        _id: response._id,
-        name: response.name,
-        username: response.username,
-        email: response.email,
-        age: response.age,
-        weight: response.weight,
-        height: response.height,
-        sex: response.sex,
-      }));
-   // Immediately set user in context
-setUser({
-  _id: response._id,
-  name: response.name,
-  username: response.username,
-  email: response.email,
-  age: response.age,
-  weight: response.weight,
-  height: response.height,
-  sex: response.sex,
-});
+      const {
+        _id,
+        name,
+        username: uname,
+        email,
+        token,
+        isProfileComplete,
+        age,
+        height,
+        weight,
+        sex,
+      } = response;
 
+      const userPayload = {
+        _id,
+        name,
+        username: uname,
+        email,
+        ...(isProfileComplete && { age, height, weight, sex }),
+      };
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userInfo", JSON.stringify(userPayload));
+      setUser(userPayload);
 
       toast({
         title: "Login successful!",
@@ -86,11 +86,8 @@ setUser({
         duration: 2000,
         isClosable: true,
       });
-      
 
-      // Handle success: save token/user and redirect
-      navigate("/workoutForm");
-
+      navigate(isProfileComplete ? "/workoutForm" : "/complete-profile");
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Try again.";
       toast({
@@ -101,30 +98,13 @@ setUser({
       });
 
       if (errorMsg === "Email not verified") {
-        setShowResend(true);
+          navigate("/verification-pending");
+
       }
+      
     }
   };
-  const handleResend = async () => {
-    try {
-      await axios.post("http://localhost:3000/api/auth/resend-verification", {
-        username: formData.username,
-      });
-      toast({
-        title: "Verification email resent!",
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (err) {
-      toast({
-        title: "Failed to resend verification email.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
+
 
   return (
     <Box p={2} textAlign={"center"}>
@@ -203,16 +183,12 @@ setUser({
             >
               Login
             </Button>
-            {showResend && (
-                <Button
-                  w="100%"
-                  variant="link"
-                  color="blue.500"
-                  onClick={handleResend}
-                >
-                  Resend Verification Email
-                </Button>
-              )}
+
+            <Text mt={2} fontSize="sm" textAlign="right">
+  <Link color="blue.500" href="/forgot-password">Forgot Password?</Link>
+</Text>
+
+            
           </VStack>
         </form>
       </Box>

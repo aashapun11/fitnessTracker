@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    // name : {
-    //     type : String,
-    //     required : true
-    // },
+    name : {
+        type : String,
+        required : true
+    },
     username : {
         type : String,
         required : true,
@@ -22,22 +22,22 @@ const userSchema = new mongoose.Schema({
         required : true,
         minlength : [6, 'Password must be at least 6 characters']
     },
-    // age : {
-    //     type : Number,
-    //     required : true
-    // },
-    // height : {
-    //     type : Number,
-    //     required : true
-    // },
-    // weight : {
-    //     type : Number,
-    //     required : true
-    // },
-    // sex : {
-    //     type : String,
-    //     required : true
-    // },
+    age : {
+        type : Number,
+        required : true
+    },
+    height : {
+        type : Number,
+        required : true
+    },
+    weight : {
+        type : Number,
+        required : true
+    },
+    sex : {
+        type : String,
+        required : true
+    },
     isVerified: {
     type: Boolean,
     default: false,
@@ -48,6 +48,12 @@ const userSchema = new mongoose.Schema({
 
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+
+  isProfileComplete: {
+  type: Boolean,
+  default: false,
+},
+
 
 });
 
