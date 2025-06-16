@@ -1,19 +1,49 @@
 const Fitness = require("../models/fitnessmodel");
+const User = require("../models/userModel");
+const moment = require("moment");
 
 const fitnessController = {
 
-    addWorkout(req, res){
+    async addWorkout(req, res){
         const { date, activity, duration, calories } = req.body;
         if (!date || !activity || !duration || !calories) {
             return res.status(400).json("Please fill in all fields.");
         }
         const userId = req.user._id; // set by JWT middleware
-        const fitness = new Fitness({ date, activity, duration, calories,
+        try{
+           const fitness = new Fitness({ date, activity, duration, calories,
             user: userId, // ✅ associate with logged-in user
         });
-        fitness.save()
-        .then((fitness) => res.json(fitness))
-        .catch((err) => res.status(400).json("Error: " + err));
+
+        fitness.save();
+         // 2. Update streak
+      const user = await User.findById(userId);
+
+      const today = moment(date).startOf("day");
+      const lastWorkout = user.lastWorkoutDate
+        ? moment(user.lastWorkoutDate).startOf("day")
+        : null;
+
+      if (!lastWorkout || !lastWorkout.isSame(today)) {
+        if (lastWorkout && lastWorkout.isSame(today.clone().subtract(1, "day"))) {
+          // Consecutive day => increase streak
+          user.streak += 1;
+        } else {
+          // Not consecutive => reset streak
+          user.streak = 1;
+        }
+
+        // Update lastWorkoutDate
+        user.lastWorkoutDate = today.toDate();
+        await user.save();
+      }
+
+      res.json({ fitness, streak: user.streak });
+
+        }catch (err) {
+      console.error(err);
+      res.status(400).json("Error: " + err.message);
+    }
     
     },
     getWorkouts(req, res){

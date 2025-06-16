@@ -97,6 +97,7 @@ if (user.resetPasswordToken || user.resetPasswordExpires) {
       username: user.username,
       email: user.email,
       token: generateToken(user._id),
+      streak: user.streak,
       isProfileComplete: user.isProfileComplete,
     };
 

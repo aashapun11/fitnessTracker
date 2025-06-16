@@ -17,6 +17,10 @@ import { workoutState } from "../Context/WorkoutProvider";
 import axios from "axios";
 import CalorieCalculate from "../utils/CalorieCalculate";
 import Navbar from "./Navbar";
+import StreakRewardModal from "./StreakRewardModal";
+import useSound from 'use-sound';
+import streakSound from '/sound/streak.mp3';
+
  
 
 function WorkoutForm() {
@@ -26,11 +30,15 @@ function WorkoutForm() {
     duration: "",
   }); 
   const toast = useToast();
+  const [showStreakModal, setShowStreakModal] = useState(false);
 
-  const { workouts, setWorkouts, user } = workoutState();
+  const { workouts, setWorkouts, user, setUser } = workoutState();
 
   const { cardBg, inputBg, textColor } = useThemeValues();
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+  const [playStreakSound] = useSound(streakSound);
+
 
   const submitHandler = async(e) => {
     e.preventDefault();
@@ -60,16 +68,31 @@ function WorkoutForm() {
         },
       };
       
-      const  {data: newWorkout} = await axios.post("http://localhost:3000/api/workouts/addWorkout", workoutData, config);
+      const  {data} = await axios.post("http://localhost:3000/api/workouts/addWorkout", workoutData, config);
+
+      const {fitness, streak} = data;
+     setWorkouts([...workouts, fitness]);
+     // ✅ Update user streak in context and localStorage
+
+     if(streak > user.streak){
+
+      const updatedUser = { ...user, streak };
+      setUser(updatedUser);
+      localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+
+      playStreakSound();
+
+      setShowStreakModal(true);
+
+     }
+
+
       toast({
         title: "Workout added!",
         status: "success",
         duration: 2000,
         isClosable: true,
       })
-
-      setWorkouts([...workouts, newWorkout]);
-
 
     }catch(err){
       toast({
@@ -200,6 +223,11 @@ function WorkoutForm() {
 
        
       </Box>
+      <StreakRewardModal
+  isOpen={showStreakModal}
+  onClose={() => setShowStreakModal(false)}
+  streak={user?.streak}
+/>
     </Box>
   );
 }

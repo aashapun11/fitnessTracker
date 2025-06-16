@@ -61,6 +61,7 @@ function LoginForm() {
         username: uname,
         email,
         token,
+        streak,
         isProfileComplete,
         age,
         height,
@@ -73,6 +74,7 @@ function LoginForm() {
         name,
         username: uname,
         email,
+        streak,
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 
