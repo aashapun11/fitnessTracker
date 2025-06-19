@@ -22,22 +22,11 @@ const userSchema = new mongoose.Schema({
         required : true,
         minlength : [6, 'Password must be at least 6 characters']
     },
-    age : {
-        type : Number,
-        required : true
-    },
-    height : {
-        type : Number,
-        required : true
-    },
-    weight : {
-        type : Number,
-        required : true
-    },
-    sex : {
-        type : String,
-        required : true
-    },
+    age: Number,
+    height: Number,
+    weight: Number,
+    sex: String,
+
     isVerified: {
     type: Boolean,
     default: false,

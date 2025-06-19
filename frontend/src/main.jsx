@@ -19,6 +19,7 @@ import ForgotPasswordForm from "./components/Authentication/ForgotPasswordForm";
 import ResetPasswordForm from "./components/Authentication/ResetPasswordForm";
 import VerificationPending from "./components/Authentication/VerificationPending";
 import CompleteProfile from "./components/Authentication/CompleteProfile";
+import Dashboard from "./components/Dashboard";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -50,6 +51,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <CompleteProfile />
               </PrivateRoute>
             } />
+
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } />
+
             
             <Route path="/workoutForm" element={
               <PrivateRoute>

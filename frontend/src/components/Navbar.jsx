@@ -7,69 +7,112 @@ import {
   Spacer,
   Avatar,
   Image,
+  HStack,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
+  Tooltip,
 } from "@chakra-ui/react";
 
-import LightMode from "./LightMode"; // ✅ Import your custom toggle
-import {NavLink, useNavigate} from "react-router-dom";
+import LightMode from "./LightMode";
+import { NavLink, useNavigate } from "react-router-dom";
 import { workoutState } from "../Context/WorkoutProvider";
-import {FaFire} from "react-icons/fa"
-
-
+import { FaFire } from "react-icons/fa";
+import useThemeValues from "../hooks/useThemeValues";
 
 function Navbar() {
-  const Navigate = useNavigate();
-
-  const {user, setUser} = workoutState();
-  const streakColor = user.streak > 0 ? "orange.500" : "gray.500";
+  const navigate = useNavigate();
+  const { user, setUser } = workoutState();
+  const { cardBg, textColor } = useThemeValues();
 
   const logoutHandler = () => {
-    localStorage.removeItem("token"); // remove JWT
+    localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
     setUser(null);
-    Navigate("/login");
+    navigate("/login");
   };
-  
+
+  const streak = user?.streak ?? 0;
+  const name = user?.name ?? "User";
+  const streakColor = streak > 0 ? "orange.500" : "gray.400";
+
   return (
-    <Box px={3} py={3} boxShadow="md">
-      <Flex align="center">
-        {/* Logo / Brand */}
-    <Box as={NavLink} to="/workoutForm">
-    <Image
-      src="/logo.png" // ✅ your downloaded image in public folder
-      alt="Fitness Logo"
-      boxSize="36px"
-      borderRadius="full"
-      objectFit="cover"
-      
-    />
-    </Box>
-    
+    <Box bg={cardBg} px={4} py={3} boxShadow="md" textColor={textColor}  position="sticky" top={0} zIndex={100}>
+      <Flex align="center" justify="space-between">
+        {/* Logo + Navigation */}
+        <HStack spacing={6}>
+          {/* Logo */}
+          <Box as={NavLink} to="/dashboard">
+            <Image
+              src="/logo.png"
+              alt="Fitness Logo"
+              boxSize="40px"
+              borderRadius="full"
+              objectFit="cover"
+            />
+          </Box>
+
+          {/* Navigation Links */}
+          <NavLink to="/workoutForm">
+            {({ isActive }) => (
+              <Text
+                fontWeight="medium"
+                color={isActive ? "blue.500" : { textColor }}
+                _hover={{ color: "blue.500" }}
+              >
+                Add Exercise
+              </Text>
+            )}
+          </NavLink>
+
+          <NavLink to="/progressGraph">
+            {({ isActive }) => (
+              <Text
+                fontWeight="medium"
+                color={isActive ? "blue.500" : { textColor }}
+                _hover={{ color: "blue.500" }}
+              >
+                Progress Graph
+              </Text>
+            )}
+          </NavLink>
+
+          <NavLink to="/workoutList">
+            {({ isActive }) => (
+              <Text
+                fontWeight="medium"
+                color={isActive ? "blue.500" : { textColor }}
+                _hover={{ color: "blue.500" }}
+              >
+                My Workouts
+              </Text>
+            )}
+          </NavLink>
+        </HStack>
         <Spacer />
 
-        {/* Right Side: LightMode toggle & Profile */}
-      
-        <Flex gap={4} align="center">
+        <Flex gap={5} align="center">
+          {/* Streak Fire Icon */}
+          <Tooltip label="Your current workout streak!" hasArrow>
+            <Flex align="center" gap={1}>
+              <Icon as={FaFire} color={streakColor} boxSize={7} />
+              <Text fontSize="xl" fontWeight="semibold" color={streakColor}>
+                {streak}
+              </Text>
+            </Flex>
+          </Tooltip>
 
-           <Box display="flex" alignItems="center" gap={1}>
-    <Icon as={FaFire} color={streakColor} boxSize={7} />
+          {/* Light/Dark Mode Toggle */}
+          <LightMode />
 
-  <Text fontSize="lg" fontWeight="semibold" color={streakColor}>
-    {user.streak}
-  </Text>
-</Box>
-
-
-          <LightMode /> {/* ✅ Your existing toggle */}
+          {/* User Avatar & Menu */}
           <Menu>
             <MenuButton>
-              <Avatar size="sm" boxSize={"41px"}  name= {user.name} src="" />
+              <Avatar size="sm" boxSize={"41px"}  name={name} />
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={() => Navigate("/profile")}>My Profile</MenuItem>
+              <MenuItem onClick={() => navigate("/profile")}>My Profile</MenuItem>
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>

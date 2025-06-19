@@ -1,179 +1,226 @@
-// src/pages/LandingPage.jsx
 import React from "react";
 import {
   Box,
   Button,
   Flex,
   Heading,
-  Image,
   Text,
   VStack,
-  keyframes,
+  SimpleGrid,
+  Icon,
+  Image,
+  Stack,
+  HStack,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { motion, px } from "framer-motion";
 import { Link } from "react-router-dom";
+import {
+  FaRunning,
+  FaBicycle,
+  FaChartLine,
+  FaFireAlt,
+  FaClipboardList,
+} from "react-icons/fa";
+import { GiBodyBalance } from "react-icons/gi";
 
 const MotionHeading = motion(Heading);
 const MotionText = motion(Text);
 const MotionBox = motion(Box);
-const MotionImage = motion(Image);
 
-const spinSlow = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const featureBadges = [
-  { emoji: "💪", label: "Log Workouts" },
-  { emoji: "📈", label: "Track Progress" },
-  { emoji: "🔥", label: "Burn Calories" },
+const popularExercises = [
+  { icon: FaRunning, title: "Running", description: "Running for every body type" },
+  { icon: GiBodyBalance, title: "Push-up", description: "Strength training for the whole body" },
+  { icon: FaBicycle, title: "Cycling", description: "Boost cardiovascular health" },
 ];
+
+const features = [
+  { icon: FaClipboardList, title: "Log Workouts", description: "Easily log your daily workouts" },
+  { icon: FaChartLine, title: "Track Progress", description: "Monitor your fitness journey" },
+  { icon: FaFireAlt, title: "Burn Calories", description: "Set goals and burn more calories" },
+];
+
+
 
 const LandingPage = () => {
   return (
-    <Box
-      minH="100vh"
-      overflow="hidden"
-      bgGradient="linear(to-br, purple.400, blue.100, white)"
-      position="relative"
-    >
-      {/* Animated Background Circles */}
-      <Box
-        position="absolute"
-        top="-100px"
-        left="-100px"
-        w="600px"
-        h="600px"
-        bgGradient="radial(purple.400 20%, transparent 70%)"
-        borderRadius="full"
-        filter="blur(120px)"
-        animation={`${spinSlow} 13s linear infinite`}
-        zIndex={0}
-      />
-      <Box
-        position="absolute"
-        bottom="-100px"
-        right="-100px"
-        w="400px"
-        h="400px"
-        bgGradient="radial(blue.300 20%, transparent 70%)"
-        borderRadius="full"
-        filter="blur(80px)"
-        animation={`${spinSlow} 19s linear infinite`}
-        zIndex={0}
-      />
-
+    <Box minH="100vh" bgGradient="linear(to-br, blue.50, white)"  overflow="hidden">
+      {/* Hero Section */}
+       
       <Flex
         direction={{ base: "column", md: "row" }}
         align="center"
         justify="space-between"
         maxW="7xl"
         mx="auto"
-        px={10}
-        pt={[10, 20]}
-        pb={[4, 8]}
+        px={6}
+        py={6}
+        gap={4}
         position="relative"
-        zIndex={10}
-        minH="100vh"
+        zIndex={2}
       >
-        {/* Left Section */}
-        <VStack align="start" spacing={6} maxW="2xl" flex={1}>
-          <MotionHeading
-            size="3xl"
-            fontWeight="extrabold"
-            lineHeight="1.2"
-            color="purple.700"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Track Your Fitness. Transform  Life.
-          </MotionHeading>
+        {/* LEFT */}
+
+        <VStack align="start" spacing={6} maxW="7xl" zIndex={2}>
+         <VStack align="start" spacing={2}>
+    <MotionText
+      fontSize="sm"
+      fontWeight="bold"
+      textTransform="uppercase"
+      color="orange.400"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      Fitness Tracker
+    </MotionText>
+
+    <MotionHeading
+      size="2xl"
+      fontWeight="extrabold"
+      color="purple.700"
+      lineHeight="short"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      Track Your Fitness.
+      <br />
+      Transform Life.
+    </MotionHeading>
+    <Text fontSize="md" color="gray.600">
+            Your Body Can Stand Almost Anything. It’s Your Mind That You Have To Condition.
+            Turn The Pain Into Power And Conquer The Pain. Let's Go!
+          </Text>
+  </VStack>
+
+          
 
           <MotionText
             fontSize="lg"
             color="gray.600"
-            maxW="lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            All-in-one tracker to log workouts, monitor progress, and stay motivated.
-          </MotionText>
-
-          <MotionBox
-            display="flex"
-            gap={4}
-            pt={2}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
           >
+            Already a member of our community?{" "}
             <Link to="/login">
-              <Button
-                size="lg"
-                bgGradient="linear(to-r, purple.500, blue.500)"
-                color="white"
-                borderRadius="2xl"
-                _hover={{ transform: "scale(1.05)", boxShadow: "xl" }}
-              >
-                Login
-              </Button>
+              <Text as="span" color="orange.400" fontWeight="bold">
+                Sign in
+              </Text>
             </Link>
-            <Link to="/signup">
-              <Button
-                size="lg"
-                variant="outline"
-                borderColor="purple.400"
-                color="purple.500"
-                borderRadius="2xl"
-                _hover={{ bg: "purple.50", color: "blue.500", borderColor: "blue.400" }}
-              >
-                Sign Up
-              </Button>
-            </Link>
-          </MotionBox>
+          </MotionText>
 
-          <Flex pt={6} gap={6} flexWrap="wrap">
-            {featureBadges.map((item, idx) => (
-              <MotionBox
-                key={item.label}
-                initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.8 + idx * 0.15, duration: 0.4 }}
-                textAlign="center"
-              >
-                <Text fontSize="2xl">{item.emoji}</Text>
-                <Text fontSize="sm" fontWeight="medium" color="gray.700">
-                  {item.label}
-                </Text>
-              </MotionBox>
-            ))}
-          </Flex>
+          <Button colorScheme="orange" borderRadius="full" size="lg">
+            Get Started
+          </Button>
         </VStack>
 
-        {/* Right Section - Image */}
-        <MotionBox
-          flex={1}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          initial={{ opacity: 0, scale: 0.96, x: 60 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-        >
-          <Image
-            src="/exercise.png"
-            alt="Fitness Illustration"
-            maxH={["240px", "360px", "420px"]}
-            borderRadius="3xl"
-            boxShadow="2xl"
-            border="1px solid"
-            borderColor="purple.100"
-            objectFit="contain"
+        {/* RIGHT - Hero Image with Glow & Floating Card */}
+        <Box position="relative" w="full" maxW="7xl" zIndex={1}>
+          {/* Glow Blob */}
+          <Box
+            position="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            w="350px"
+            h="350px"
+            bgGradient="radial(orange.100, transparent)"
+            borderRadius="full"
+            zIndex={0}
           />
-        </MotionBox>
+
+          {/* Image */}
+          <Image
+            src="/real.png"
+            alt="Hero Fitness"
+            maxH="500px"
+            objectFit="contain"
+            position="relative"
+            zIndex={1}
+            mx="auto"
+          />
+          </Box>
+
+          {/* Floating Badge Card */}
+
+          <Box maxW="7xl" mx="auto" px={6} py={12}>
+        <Heading fontSize="2xl" color="purple.700" ml={0} mb={6} borderLeft="4px solid orange" pl={2}>
+  Popular Exercises
+</Heading>
+        <VStack align="start" spacing={4} maxW="2xl" mx="auto" >
+          {popularExercises.map((item, idx) => (
+            <MotionBox
+            
+            height="100px"
+            width={"120px"}
+              key={idx}
+              p={2}
+              bg="white"
+              borderRadius="xl"
+              textAlign="center"
+               boxShadow="lg"
+              border="2px solid"
+              borderColor="purple.200"
+              transition="all 0.2s"
+              _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}
+
+            >
+              <Icon as={item.icon} boxSize={10} color="orange.400" />
+              <Heading size="md" mt={2} color="purple.600">
+                {item.title}
+              </Heading>
+             
+            </MotionBox>
+          ))}
+        </VStack>
+      </Box>
+
+          
       </Flex>
+
+      
+      <Box
+        py={12}
+        px={6}
+        bg={"white"}
+        maxW="8xl"
+        
+        mx={"auto"}
+        borderTop="2px solid #eee"
+        borderRadius="xl"
+        textAlign="center"
+      >
+        <Heading fontSize="3xl" color="purple.700">
+          Why Choose Us?
+        </Heading>
+        <Text maxW="2xl" mx="auto" mt={2} color="gray.600" fontSize="sm">
+          Of Course It's Hard. It's Supposed To Be Hard. If It Were Easy, Everybody Would Do It.
+          Hard Is What Makes It Great.
+        </Text>
+
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} mt={10} maxW="5xl" mx="auto">
+          {features.map((feature, idx) => (
+            <MotionBox
+              key={idx}
+              p={4}
+              borderRadius="xl"
+              bg="orange.50"
+              boxShadow="lg"
+              border="2px solid"
+              borderColor="purple.200"
+              transition="all 0.2s"
+              _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}
+            >
+              <Icon as={feature.icon} boxSize={10} color="purple.500" />
+              <Text fontSize="xl" fontWeight="bold" mt={4} color="orange.500">
+                {feature.title}
+              </Text>
+              <Text mt={2} fontSize="sm" color="gray.600">
+                {feature.description}
+              </Text>
+            </MotionBox>
+          ))}
+        </SimpleGrid>
+      </Box>
     </Box>
   );
 };

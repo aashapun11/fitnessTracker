@@ -20,7 +20,7 @@ function WorkoutProvider({children}) {
           },
         }
         const response = await axios.get("http://localhost:3000/api/workouts/getWorkouts", config);
-        setWorkouts(response.data);
+        setWorkouts(response.data);     
       }
       getWorkouts();
       

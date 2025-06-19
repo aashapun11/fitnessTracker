@@ -13,6 +13,7 @@ import {
 
 import useThemeValues from "../hooks/useThemeValues";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { workoutState } from "../Context/WorkoutProvider";
 import axios from "axios";
 import CalorieCalculate from "../utils/CalorieCalculate";
@@ -38,6 +39,7 @@ function WorkoutForm() {
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   const [playStreakSound] = useSound(streakSound);
+  const navigate = useNavigate();
 
 
   const submitHandler = async(e) => {
@@ -83,16 +85,30 @@ function WorkoutForm() {
       playStreakSound();
 
       setShowStreakModal(true);
+      setTimeout(() => {
+  navigate("/dashboard");
+}, 3000);
+toast({
+        title: "Workout added!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      })
 
      }
-
-
+     else{
       toast({
         title: "Workout added!",
         status: "success",
         duration: 2000,
         isClosable: true,
       })
+      navigate("/dashboard");
+
+     }
+
+
+      
 
     }catch(err){
       toast({
@@ -124,7 +140,7 @@ function WorkoutForm() {
   
   <Navbar/>
 
-      <Heading>My Fitness Tracker</Heading>
+      <Heading mt={4}>My Fitness Tracker</Heading>
       <Text mt={2}>Track your workout & progress easily!</Text>
       <Box
         maxW="500px"

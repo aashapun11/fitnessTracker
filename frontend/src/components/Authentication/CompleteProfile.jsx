@@ -47,6 +47,17 @@ function CompleteProfile() {
     }
     const { age, height, weight, sex } = profileData;
 
+    if(!age || !height || !weight || !sex) {
+      toast({
+        title: "Invalid input",
+        description: "Please enter valid and complete profile data",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      })
+      return;
+    }
+
     // Simple input validation
     if (+age <= 0 || +height <= 0 || +weight <= 0 || !sex) {
       toast({
@@ -92,7 +103,7 @@ function CompleteProfile() {
         isClosable: true,
       });
 
-      navigate("/workoutList");
+      navigate("/workoutForm");
     } catch (error) {
       const errMsg =
         error.response?.data?.message || "Failed to complete profile.";
