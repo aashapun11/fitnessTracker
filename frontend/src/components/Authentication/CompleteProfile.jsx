@@ -72,7 +72,7 @@ function CompleteProfile() {
 
     try {
       const { data: response } = await axios.post(
-        "http://localhost:3000/api/auth/complete-profile",
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/complete-profile`,
         profileData,
         {
           headers: {

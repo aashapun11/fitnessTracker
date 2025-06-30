@@ -27,7 +27,7 @@ function WorkoutList() {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             }
           }
-          const { data } = await axios.get("http://localhost:3000/api/workouts/getWorkouts", config);
+          const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/workouts/getWorkouts`, config);
           setWorkouts(data);
         } catch (error) {
           toast({
@@ -116,7 +116,7 @@ function WorkoutList() {
           if (!confirmDelete) return;
 
           try {
-            await axios.delete("http://localhost:3000/api/workouts/deleteWorkouts", {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/workouts/deleteWorkouts`, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
@@ -183,7 +183,7 @@ function WorkoutList() {
                     if (!confirmDelete) return;
                     try {
 
-                      await axios.delete(`http://localhost:3000/api/workouts/deleteWorkout/${w._id}`,
+                      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/workouts/deleteWorkout/${w._id}`,
                         {
                           headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`,

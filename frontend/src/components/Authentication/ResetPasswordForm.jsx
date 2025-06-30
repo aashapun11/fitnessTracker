@@ -34,7 +34,7 @@ const token = searchParams.get("token"); // ✅ Correct for query param
       return;
     }
     try {
-      await axios.post(`http://localhost:3000/api/auth/reset-password?token=${token}`, {
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/reset-password?token=${token}`, {
         newPassword: password,
       });
       toast({

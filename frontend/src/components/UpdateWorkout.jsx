@@ -49,7 +49,7 @@ function UpdateWorkout() {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             }
-            const { data: updatedWorkout } = await axios.put(`http://localhost:3000/api/workouts/updateWorkout/${id}`, updatedData,
+            const { data: updatedWorkout } = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/workouts/updateWorkout/${id}`, updatedData,
               config
             );
             toast({
@@ -78,7 +78,7 @@ function UpdateWorkout() {
 
       useEffect(() => {
         async function getWorkouts() {
-          await axios.get(`http://localhost:3000/api/workouts/getWorkout/${id}`,{
+          await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/workouts/getWorkout/${id}`,{
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },

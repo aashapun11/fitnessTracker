@@ -65,7 +65,7 @@ import {
           };
 
           // Make the API call
-          const { data:response } = await axios.put("http://localhost:3000/api/auth/updateProfile", formData, config);
+          const { data:response } = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/auth/updateProfile`, formData, config);
       
            const updatedUser = {
         _id: response._id,

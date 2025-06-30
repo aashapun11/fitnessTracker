@@ -22,6 +22,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import { GiBodyBalance } from "react-icons/gi";
+import Footer from "./Footer";
 
 const MotionHeading = motion(Heading);
 const MotionText = motion(Text);
@@ -108,7 +109,7 @@ const LandingPage = () => {
             </Link>
           </MotionText>
 
-          <Button colorScheme="orange" borderRadius="full" size="lg">
+          <Button as={Link} to="/signup" colorScheme="orange" borderRadius="full" size="lg">
             Get Started
           </Button>
         </VStack>
@@ -221,6 +222,8 @@ const LandingPage = () => {
           ))}
         </SimpleGrid>
       </Box>
+
+      <Footer />
     </Box>
   );
 };

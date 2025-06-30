@@ -23,7 +23,7 @@ const Dashboard = () => {
   const [lastSevenDayChartData, setLastSevenDayChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user, workouts } = workoutState();
-  const {textColor, inputBg, cardBg } = useThemeValues();
+  const {textColor,  cardBg } = useThemeValues();
 
   const today = new Date().toISOString().split("T")[0];
 

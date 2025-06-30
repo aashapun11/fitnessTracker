@@ -11,6 +11,7 @@ const authController = {
     async signup(req, res) {
         try {
              const { name, username, email, password } = req.body;
+            
              
 
             const token = crypto.randomBytes(32).toString("hex");

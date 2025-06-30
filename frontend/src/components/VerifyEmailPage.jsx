@@ -10,7 +10,6 @@ const VerifyEmailPage = () => {
 
   useEffect(() => {
     const token = new URLSearchParams(window.location.search).get("token");
-    console.log(token);
     if (!token) {
       toast({
         title: "Invalid link",
@@ -23,7 +22,7 @@ const VerifyEmailPage = () => {
 
     const verifyEmail = async () => {
       try {
-        await axios.get(`http://localhost:3000/api/auth/verify-email?token=${token}`);
+        await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/verify-email?token=${token}`);
         toast({
           title: "Email verified successfully!",
           status: "success",

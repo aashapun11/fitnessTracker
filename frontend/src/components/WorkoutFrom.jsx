@@ -70,7 +70,7 @@ function WorkoutForm() {
         },
       };
       
-      const  {data} = await axios.post("http://localhost:3000/api/workouts/addWorkout", workoutData, config);
+      const  {data} = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/workouts/addWorkout`, workoutData, config);
 
       const {fitness, streak} = data;
      setWorkouts([...workouts, fitness]);

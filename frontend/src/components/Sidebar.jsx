@@ -8,18 +8,15 @@ import {
   FiUser,
   FiLogOut,
 } from "react-icons/fi";
-import { FaFire } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
 import { workoutState } from "../Context/WorkoutProvider";
-import LightMode from "./LightMode";
 import useThemeValues from "../hooks/useThemeValues";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { user, setUser } = workoutState();
    const streak = user?.streak ?? 0;
-  const streakColor = streak > 0 ? "orange.500" : "gray.400";
   const {iconColor, iconBg} = useThemeValues();
 
   const logoutHandler = () => {
@@ -62,12 +59,7 @@ const Sidebar = () => {
           <IconButton icon={<FiUser />}  color={iconColor} bg={iconBg} onClick={() => navigate("/profile")} />
         </Tooltip>
 
-       <Tooltip label={`Streak: ${streak}`} placement="right">
-              <IconButton icon={<FaFire />} bg={iconBg} color={streakColor} />     
-          </Tooltip>
-          <Tooltip label="Toogle Theme" placement="right">
-          <IconButton icon={<Icon />}  as={LightMode} />
-        </Tooltip>
+      
 
         <Tooltip label="Logout" placement="right">
           <IconButton icon={<FiLogOut /> } color={iconColor} bg={iconBg} onClick={logoutHandler} />

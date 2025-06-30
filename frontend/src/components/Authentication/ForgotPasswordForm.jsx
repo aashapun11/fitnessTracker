@@ -12,7 +12,7 @@ function ForgotPasswordForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/forgot-password`, { email });
       toast({
         title: "Reset link sent.",
         description: "Check your inbox for the password reset link.",

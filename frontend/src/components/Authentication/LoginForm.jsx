@@ -49,7 +49,7 @@ function LoginForm() {
 
     try {
       
-      const {data:response} = await axios.post("http://localhost:3000/api/auth/login", {
+      const {data:response} = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, {
         username,
         password,
       });

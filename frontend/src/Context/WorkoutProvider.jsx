@@ -19,7 +19,7 @@ function WorkoutProvider({children}) {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-        const response = await axios.get("http://localhost:3000/api/workouts/getWorkouts", config);
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/workouts/getWorkouts`, config);
         setWorkouts(response.data);     
       }
       getWorkouts();

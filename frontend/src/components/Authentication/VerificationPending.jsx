@@ -33,7 +33,7 @@ const { cardBg, inputBg, textColor } = useThemeValues();
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:3000/api/auth/resend-verification", {
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/resend-verification`, {
         email
       });
 

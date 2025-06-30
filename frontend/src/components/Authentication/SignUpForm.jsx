@@ -88,7 +88,7 @@ function SignUpForm() {
 
     try{
       const { confirmPassword, ...userData } = formData;
-     await axios.post("http://localhost:3000/api/auth/signup", formData);
+     await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/signup`, formData);
       toast({
         title: "Registration successful!",
         description: "Please check your email to verify your account.",
@@ -110,7 +110,7 @@ function SignUpForm() {
     }catch(error){
       toast({
         title: "Registration failed.",
-        description: error.message,
+        description:  error.response?.data?.error || error.message,
         status: "error",
         duration: 3000,
         isClosable: true,
