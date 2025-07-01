@@ -6,7 +6,10 @@ env.config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL, // e.g., https://your-frontend.onrender.com
+  credentials: true               // allows cookies or Authorization headers
+}));
 app.use(bodyParser.json());
 
 app.use(express.json());
