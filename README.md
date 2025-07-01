@@ -7,24 +7,41 @@
 
 ---
 
-## ⚡ Features
+## 🚀 Features
 
-- 🔐 **JWT-based authentication**
-- 🏃‍♂️ **Log workouts** with type, duration & date
-- 🔥 **Calorie calculation** using MET formula
-- 📊 **Progress dashboard** with graphs & pie charts
-- 📅 **Daily streak system** with sound 
-- 🌙 **Light / Dark Mode** support
-- 📈 **Workout history & visual graphs**
+- 👤 **User Registration & Login** (with JWT auth)
+- 📧 **Email Verification** after signup
+- 🔐 **Forgot Password** feature via email reset link
+- 🏋️‍♂️ **Log Workouts** with type, duration & date
+- 🔥 **Automatic Calorie Burn Calculation** using MET values
+- 📈 **Dashboard**:
+  - Total calories burned today
+  - Visual charts (pie chart & progress graphs)
+- 💪 **Workout Streaks** with sound + reward modal
+- 🌗 **Light/Dark Mode** with Chakra UI
+- 🗃️ **Workout History** with filters
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React, Vite, Chakra UI, Axios, Recharts, React Router
-- **Backend**: Node.js, Express, MongoDB Atlas (Mongoose), JWT auth
-- **Deployment**: Render (frontend + backend)
-- **Extras**: `node-fetch`, `cors`, `dotenv`, `use-sound`
+### 💻 Frontend
+
+- React (Vite)
+- Chakra UI
+- Axios
+- React Router
+- Recharts
+- use-sound
+
+### 🌐 Backend
+
+- Node.js + Express
+- MongoDB Atlas + Mongoose
+- Nodemailer + Brevo (email services)
+- JWT (Authentication)
+- bcrypt (Password hashing)
+- dotenv, cors, validator
 
 ---
 
