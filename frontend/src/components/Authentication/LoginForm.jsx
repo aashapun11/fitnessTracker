@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import React, { useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import {
   Box,
   Button,
   Input,
   InputGroup,
-  Image,
   InputRightElement, 
   Heading,
   VStack,
@@ -113,9 +112,13 @@ function LoginForm() {
 
 
 
-const handleGoogleLogin = async (credentialResponse) => {
+const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
     try {
-      const { credential } = credentialResponse;
+
+      
+      const  credential  = tokenResponse.access_token;
+     
 
       const { data : response } = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/auth/google`,
@@ -166,12 +169,16 @@ const handleGoogleLogin = async (credentialResponse) => {
         isClosable: true,
       });
     }
-  };
+  },
+})
+
+  
 
 
   return (
     <Box p={2} textAlign={"center"}>
      <LightMode />
+     
 
     <Flex 
       minH="80vh" 
@@ -265,24 +272,21 @@ const handleGoogleLogin = async (credentialResponse) => {
 
 
 
-<Box width="100%">
-<GoogleLogin
-    
-      onSuccess={handleGoogleLogin}
-      onError={() =>
-        toast({
-          title: "Google Sign-In failed",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        })
-
+ <Button
+      onClick={() => handleGoogleLogin()}
+      leftIcon={
+        <img
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          width="20"
+          alt="google"
+        />
       }
-     
-    />
-
-</Box>
-
+      variant="outline"
+      colorScheme="blue"
+      width="100%"
+    >
+      Sign in with Google
+    </Button>
 
 
 

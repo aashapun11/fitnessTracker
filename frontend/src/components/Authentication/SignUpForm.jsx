@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import {
   Box,
@@ -124,10 +124,10 @@ function SignUpForm() {
     }
   };
 
-  const handleGoogleSignup = async (credentialResponse) => {
-    try {
-      const { credential } = credentialResponse;
-
+  const handleGoogleSignup =useGoogleLogin({
+      onSuccess: async (tokenResponse) => {
+      try {      
+        const  credential  = tokenResponse.access_token;
       const { data : response  } = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/auth/google`,
         { token: credential }
@@ -177,7 +177,8 @@ function SignUpForm() {
         isClosable: true,
       });
     }
-  };
+  }
+  });
 
 
   return (
@@ -199,6 +200,36 @@ function SignUpForm() {
 
 
       <form onSubmit={submitHandler}>
+
+<Button
+      onClick={() => handleGoogleSignup()}
+      leftIcon={
+        <img
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          width="20"
+          alt="google"
+        />
+      }
+      variant="outline"
+      colorScheme="blue"
+      width="100%"
+    >
+      Sign Up with Google
+    </Button>
+      <Flex align="center" width="100%" >
+  <Divider borderColor="gray.400" />
+  <Text
+    px={2}
+    fontWeight="semibold"
+    color={textColor}
+    fontSize="sm"
+    whiteSpace="nowrap"
+    m={4}
+  >
+    OR
+  </Text>
+  <Divider borderColor="gray.300" />
+</Flex>
 
       
         <VStack spacing={4}>
@@ -301,41 +332,6 @@ function SignUpForm() {
           </Button>
         </VStack>
       </form>
-
-    <Flex align="center" width="100%" >
-  <Divider borderColor="gray.400" />
-  <Text
-    px={2}
-    fontWeight="semibold"
-    color={textColor}
-    fontSize="sm"
-    whiteSpace="nowrap"
-    m={4}
-  >
-    OR
-  </Text>
-  <Divider borderColor="gray.300" />
-</Flex>
-
-
-
-  <Box width="100%">
-<GoogleLogin
-    
-      onSuccess={handleGoogleSignup}
-      onError={() =>
-        toast({
-          title: "Google Sign-UP failed",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        })
-
-      }
-     
-    />
-
-</Box>
   </Box>
    
     </Box>
