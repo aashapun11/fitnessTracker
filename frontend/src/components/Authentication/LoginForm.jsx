@@ -278,7 +278,7 @@ const handleGoogleLogin = async (credentialResponse) => {
         })
 
       }
-     
+     width="100%"
     />
 
 </Box>
