@@ -4,7 +4,7 @@ const {sendVerificationEmail} = require('../utils/sendEmail');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require("google-auth-library");
-
+const axios = require('axios');
 
 require('dotenv').config();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -16,12 +16,15 @@ const authController = {
      const { token } = req.body;
 
   try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+   
+    const response = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    const payload = ticket.getPayload();
+    const payload = response.data;
+
     const { name, email, sub: googleId } = payload;
 
     let user = await User.findOne({ email });
