@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
+
 import {
   Box,
   Button,
@@ -12,12 +14,15 @@ import {
   FormControl,
   FormLabel,
   Text,
-  Link
+  Link,
+  Divider,
+  Flex
 } from "@chakra-ui/react";
 import useThemeValues from "../../hooks/useThemeValues"; // Reuse your dark/light mode styling
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { workoutState } from "../../Context/WorkoutProvider";
 
 
 function SignUpForm() {
@@ -26,6 +31,7 @@ function SignUpForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { setUser } = workoutState();
   
 
   const [formData, setFormData] = useState({
@@ -118,6 +124,62 @@ function SignUpForm() {
     }
   };
 
+  const handleGoogleSignup = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+
+      const { data : response  } = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/google`,
+        { token: credential }
+      );
+
+      const {
+        _id,
+        name,
+        username: uname,
+        email,
+        token,
+        streak,
+        isProfileComplete,
+        age,
+        height,
+        weight,
+        sex,
+      } = response;
+
+      const userPayload = {
+        _id,
+        name,
+        username: uname,
+        email,
+        streak,
+        ...(isProfileComplete && { age, height, weight, sex }),
+      };
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userInfo", JSON.stringify(userPayload));
+      setUser(userPayload);
+
+      toast({
+        title: "Signup successful with Google!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+
+      navigate(isProfileComplete ? "/workoutForm" : "/complete-profile");
+    } catch (err) {
+      toast({
+        title: "Google Sign-UP failed",
+        description: err.response?.data?.message || "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+
   return (
     <Box p={2} textAlign={"center"}>
 
@@ -134,7 +196,11 @@ function SignUpForm() {
           _hover={{ color: "blue.700" }}
         >  Login
         </Link></Text>
+
+
       <form onSubmit={submitHandler}>
+
+      
         <VStack spacing={4}>
         <FormControl>
             <FormLabel color={textColor}>Full Name</FormLabel>
@@ -235,7 +301,43 @@ function SignUpForm() {
           </Button>
         </VStack>
       </form>
-    </Box>
+
+    <Flex align="center" width="100%" >
+  <Divider borderColor="gray.400" />
+  <Text
+    px={2}
+    fontWeight="semibold"
+    color={textColor}
+    fontSize="sm"
+    whiteSpace="nowrap"
+    m={4}
+  >
+    OR
+  </Text>
+  <Divider borderColor="gray.300" />
+</Flex>
+
+
+
+  <Box width="100%">
+<GoogleLogin
+    
+      onSuccess={handleGoogleSignup}
+      onError={() =>
+        toast({
+          title: "Google Sign-UP failed",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        })
+
+      }
+     
+    />
+
+</Box>
+  </Box>
+   
     </Box>
   );
 }

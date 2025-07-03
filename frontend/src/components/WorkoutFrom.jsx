@@ -75,8 +75,9 @@ function WorkoutForm() {
       const {fitness, streak} = data;
      setWorkouts([...workouts, fitness]);
      // ✅ Update user streak in context and localStorage
+    const currentStreak = Number(user?.streak) || 0;
 
-     if(streak > user.streak){
+     if(streak > currentStreak){
 
       const updatedUser = { ...user, streak };
       setUser(updatedUser);

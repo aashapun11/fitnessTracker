@@ -19,7 +19,9 @@ const userSchema = new mongoose.Schema({
     },
     password : {
         type : String,
-        required : true,
+         required: function () {
+      return this.authProvider === 'local';
+    },
         minlength : [6, 'Password must be at least 6 characters']
     },
     age: Number,
@@ -57,6 +59,8 @@ const userSchema = new mongoose.Schema({
 
 // encrypting password
 userSchema.pre('save', async function (next) {
+    if (this.authProvider !== 'local') return next(); // skip hashing for Google
+
   if (!this.isModified('password')) return next(); // if password is not modified
   const salt = await bcrypt.genSalt(); // generate salt
   this.password = await bcrypt.hash(this.password, salt);

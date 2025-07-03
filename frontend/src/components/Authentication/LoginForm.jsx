@@ -1,16 +1,20 @@
 import React, { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
+
 import {
   Box,
   Button,
   Input,
   InputGroup,
+  Image,
   InputRightElement, 
   Heading,
   VStack,
   useToast,
   Text,
   Flex,
-  Link
+  Link,
+  Divider
 } from "@chakra-ui/react";
 import useThemeValues from "../../hooks/useThemeValues"; // assuming you have this hook
 import axios from "axios";
@@ -108,6 +112,63 @@ function LoginForm() {
   };
 
 
+
+const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+
+      const { data : response } = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/google`,
+        { token: credential }
+      );
+
+      const {
+        _id,
+        name,
+        username: uname,
+        email,
+        token,
+        streak,
+        isProfileComplete,
+        age,
+        height,
+        weight,
+        sex,
+      } = response;
+
+      const userPayload = {
+        _id,
+        name,
+        username: uname,
+        email,
+        streak,
+        ...(isProfileComplete && { age, height, weight, sex }),
+      };
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userInfo", JSON.stringify(userPayload));
+      setUser(userPayload);
+
+      toast({
+        title: "Login with Google successful!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+
+      navigate(isProfileComplete ? "/workoutForm" : "/complete-profile");
+    } catch (err) {
+      toast({
+        title: "Google Sign-In failed",
+        description: err.response?.data?.message || "Something went wrong",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+
   return (
     <Box p={2} textAlign={"center"}>
      <LightMode />
@@ -122,7 +183,7 @@ function LoginForm() {
       
       <Box
         maxW="400px"
-        w="100%"
+        w="50%"
         bg={cardBg}
         borderRadius="2xl"
         p={4}
@@ -163,6 +224,7 @@ function LoginForm() {
             border="1px solid blackAlpha.300"
             value={formData.password}
             onChange={handleChange}
+            autoComplete="off"
           />
           <InputRightElement width="3rem">
             <Button
@@ -186,7 +248,45 @@ function LoginForm() {
               Login
             </Button>
 
-            <Text mt={2} fontSize="sm" textAlign="right">
+
+<Flex align="center" width="100%" >
+  <Divider borderColor="gray.400" />
+  <Text
+    px={2}
+    fontWeight="semibold"
+    color={textColor}
+    fontSize="sm"
+    whiteSpace="nowrap"
+  >
+    OR
+  </Text>
+  <Divider borderColor="gray.300" />
+</Flex>
+
+
+
+<Box width="100%">
+<GoogleLogin
+    
+      onSuccess={handleGoogleLogin}
+      onError={() =>
+        toast({
+          title: "Google Sign-In failed",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        })
+
+      }
+     
+    />
+
+</Box>
+
+
+
+
+            <Text fontSize="sm" textAlign="right">
   <Link color="blue.500" href="/forgot-password">Forgot Password?</Link>
 </Text>
 

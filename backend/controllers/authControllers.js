@@ -3,10 +3,74 @@ const generateToken = require('../utils/generateToken');
 const {sendVerificationEmail} = require('../utils/sendEmail');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const { OAuth2Client } = require("google-auth-library");
+
 
 require('dotenv').config();
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 const authController = {
+
+  async loginWithGoogle(req,res){
+     const { token } = req.body;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { name, email, sub: googleId } = payload;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user with Google info
+      user = new User({
+        name,
+        email,
+        googleId,
+        username: email.split("@")[0],
+        authProvider: 'google',
+        isVerified: true,
+        streak: 0,
+        age: null,
+        height: null,
+        weight: null,
+        sex: null,
+        isProfileComplete: false,
+      });
+
+      await user.save();
+    }
+
+    // Base response
+    const baseUserData = {
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      token: generateToken(user._id),
+      streak: user.streak,
+      isProfileComplete: user.isProfileComplete,
+    };
+
+    // Add profile data if available
+    if (user.isProfileComplete) {
+      baseUserData.age = user.age;
+      baseUserData.height = user.height;
+      baseUserData.weight = user.weight;
+      baseUserData.sex = user.sex;
+    }
+
+    res.status(200).json(baseUserData);
+  } catch (error) {
+    console.error("Google OAuth error:", error.message);
+    res.status(400).json({ message: "Google login failed" });
+  }
+  },
 
     async signup(req, res) {
         try {

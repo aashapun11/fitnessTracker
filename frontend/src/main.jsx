@@ -1,8 +1,9 @@
-import React from "react";
+
 import ReactDOM from "react-dom/client";
 import { ChakraProvider} from "@chakra-ui/react";
 import { BrowserRouter,Routes, Route } from "react-router-dom";
-import App from "./App";
+import {GoogleOAuthProvider } from '@react-oauth/google';
+
 import ProgressGraph from "./components/MyProgressGraph";
 import WorkoutList from "./components/WorkoutList";
 import WorkoutProvider from "./Context/WorkoutProvider";
@@ -23,6 +24,8 @@ import Dashboard from "./components/Dashboard";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+
   
   <ChakraProvider>
   <BrowserRouter>
@@ -92,4 +95,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Routes>
   </BrowserRouter>
 </ChakraProvider>
+  </GoogleOAuthProvider>
+
 );
