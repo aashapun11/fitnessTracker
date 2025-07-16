@@ -1,13 +1,13 @@
 // src/components/Sidebar.js
 import { Box, VStack, IconButton, Tooltip, Image, Icon } from "@chakra-ui/react";
 import {
-  FiGrid,
-  FiCalendar,
-  
+  FiCalendar, 
   FiClock,
   FiUser,
   FiLogOut,
 } from "react-icons/fi";
+import { FaUtensils } from "react-icons/fa"; // meal/food
+
 
 import { useNavigate } from "react-router-dom";
 import { workoutState } from "../Context/WorkoutProvider";
@@ -45,11 +45,13 @@ const Sidebar = () => {
         <Image src="/logo.png" boxSize="40px" alt="Logo" />
 
         {/* Icons */}
-        <Tooltip label="Dashboard" placement="right">
-          <IconButton icon={<FiGrid />} color={iconColor} bg={iconBg} onClick={() => navigate("/dashboard")} />
-        </Tooltip>
+      
         <Tooltip label="Workout Form" placement="right">
           <IconButton icon={<FiCalendar />} color={iconColor} bg={iconBg} onClick={() => navigate("/workoutForm")} />
+        </Tooltip>
+
+          <Tooltip label="Food Tracker" placement="right">
+          <IconButton icon={< FaUtensils  />} color={iconColor} bg={iconBg} onClick={() => navigate("/smart-nutrition")} />
         </Tooltip>
         
         <Tooltip label="Progress" placement="right">

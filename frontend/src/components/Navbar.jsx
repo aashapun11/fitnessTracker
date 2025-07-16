@@ -66,6 +66,18 @@ function Navbar() {
             )}
           </NavLink>
 
+          <NavLink to="/smart-nutrition">
+            {({ isActive }) => (
+              <Text
+                fontWeight="medium"
+                color={isActive ? "blue.500" : { textColor }}
+                _hover={{ color: "blue.500" }}
+              >
+                Add Food
+              </Text>
+            )}
+          </NavLink>
+
           <NavLink to="/progressGraph">
             {({ isActive }) => (
               <Text

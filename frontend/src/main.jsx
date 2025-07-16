@@ -21,6 +21,8 @@ import ResetPasswordForm from "./components/Authentication/ResetPasswordForm";
 import VerificationPending from "./components/Authentication/VerificationPending";
 import CompleteProfile from "./components/Authentication/CompleteProfile";
 import Dashboard from "./components/Dashboard";
+import SmartNutritionForm from "./components/SmartNutritionForm";
+import AddFoodForm from "./components/AddFoodForm";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -34,6 +36,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Route path="/" element={<LandingPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/verification-pending" element={<VerificationPending />} />
+      {/* <Route path="/smart-nutrition" element={<SmartNutritionForm />} />
+      <Route path="/add-food" element={<AddFoodForm />} /> */}
 
       {/* Protected routes - wrapped in WorkoutProvider */}
       <Route element={
@@ -61,7 +65,18 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               </PrivateRoute>
             } />
 
-            
+            <Route path="/smart-nutrition" element={
+              <PrivateRoute>
+                <SmartNutritionForm />
+              </PrivateRoute>
+            } />
+
+            <Route path="/add-food" element={
+              <PrivateRoute>
+                <AddFoodForm />
+              </PrivateRoute>
+            } />
+
             <Route path="/workoutForm" element={
               <PrivateRoute>
                 <WorkoutForm />
