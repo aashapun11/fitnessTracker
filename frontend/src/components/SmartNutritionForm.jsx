@@ -9,7 +9,9 @@ import {
   Td,
   Button,
   HStack,
-  Flex
+  Flex,
+  IconButton,
+  Tooltip 
 } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
@@ -17,10 +19,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
 import useThemeValues  from "../hooks/useThemeValues";
+import { FiMinus } from "react-icons/fi"; // Make sure this import is present
+
 
 function SmartNutritionForm() {
   const [date, setDate] = useState(new Date());
-  const [waterGlasses, setWaterGlasses] = useState(0);
+  const [waterGlasses, setWaterGlasses] = useState();
   const [items, setItems] = useState([]);
   const { cardBg, inputBg, textColor } = useThemeValues();
 
@@ -164,7 +168,7 @@ useEffect(() => {
         <Td fontWeight="bold" rowSpan={2}>
           {mealType}
         </Td>
-        <Td colSpan={7} textAlign="center" color="gray.500" fontStyle="italic">
+        <Td colSpan={8} textAlign="center" color="gray.500" fontStyle="italic">
           
         </Td>
       </Tr>
@@ -173,12 +177,12 @@ useEffect(() => {
     // Add Food row
     rows.push(
       <Tr key={`${mealType}-add-empty`}>
-        <Td colSpan={7}>
+        <Td colSpan={8}>
           <Button
   size="sm"
   colorScheme="blue"
   variant="outline"
-  onClick={() => navigate(`/add-food?mealType=${mealType}`)}
+  onClick={() => navigate(`/add-food?mealType=${mealType}&date=${date.toISOString().slice(0, 10)}`)}
 >
   Add Food
 </Button>
@@ -203,6 +207,19 @@ useEffect(() => {
           <Td isNumeric>{Math.round(item.fat)}</Td>
           <Td isNumeric>{Math.round(item.sugar)}</Td>
           <Td isNumeric>{Math.round(item.fiber)}</Td>
+          <Td>
+  <Tooltip label="Delete" hasArrow bg="red.500" color="white">
+    <IconButton
+      icon={<FiMinus />}
+      size={"12px"}
+      colorScheme="red"
+      aria-label="Delete food item"
+      onClick={() => handleDelete(item._id)}
+      borderRadius="full"
+      _hover={{ bg: "red.100", color: "red.600" }}
+    />
+  </Tooltip>
+</Td>
         </Tr>
       );
     });
@@ -215,7 +232,7 @@ useEffect(() => {
   size="sm"
   colorScheme="blue"
   variant="outline"
-    onClick={() => navigate(`/add-food?mealType=${mealType}`)}
+    onClick={() => navigate(`/add-food?mealType=${mealType}&date=${date.toISOString().slice(0, 10)}`)}
 
 >
   Add Food
@@ -223,11 +240,11 @@ useEffect(() => {
 
         </Td>
         <Td isNumeric fontWeight="bold">{Math.round(total.calories)}</Td>
-        <Td isNumeric fontWeight="bold">{total.carbs}</Td>
-        <Td isNumeric fontWeight="bold">{total.protein}</Td>
-        <Td isNumeric fontWeight="bold">{total.fat}</Td>
-        <Td isNumeric fontWeight="bold">{total.sugar}</Td>
-        <Td isNumeric fontWeight="bold">{total.fiber}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(total.carbs)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(total.protein)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(total.fat)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(total.sugar)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(total.fiber)}</Td>
       </Tr>
     );
   }
@@ -235,7 +252,7 @@ useEffect(() => {
   // Divider row between meal types
   rows.push(
     <Tr key={`${mealType}-divider`}>
-      <Td colSpan={8} p={0}>
+      <Td colSpan={9} p={0}>
         <Box height="2px" bg="gray.400" />
       </Td>
     </Tr>
@@ -263,6 +280,28 @@ const overallTotals = items.reduce(
     fiber: 0,
   }
 );
+
+const handleDelete = async (id) => {
+  const confirmed = window.confirm("Are you sure you want to delete this food item?");
+  if (!confirmed) return;
+
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+
+    await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/nutrition/deleteNutrition/${id}`, config);
+
+    // Update state locally without refetching
+    setItems((prev) => prev.filter((item) => item._id !== id));
+  } catch (err) {
+    console.error("Failed to delete item:", err);
+    alert("Could not delete item. Try again later.");
+  }
+};
+
 
 
   return (

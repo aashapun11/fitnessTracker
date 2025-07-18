@@ -4,7 +4,7 @@ const Nutrition = require("../models/nutritionModel");
 const nutritionController = {
 
     async addNutrition(req, res) {
-        const { food, mealType, calories, protein, carbs, fat, sugar, fiber, water, date } = req.body;
+        const { food, mealType, calories, protein, carbs, fat, sugar, fiber, date } = req.body;
 
         try {
             const nutrition = await Nutrition.create({
@@ -26,13 +26,7 @@ const nutritionController = {
         }
     },
     async getNutrition(req, res) {
-        // try {
-        //     const nutrition = await Nutrition.find({ user: req.user._id });
-        //     res.json(nutrition);
-        // } catch (error) {
-        //     res.status(500).json({ error: error.message });
-        // }
-
+       
         if (!req.user || !req.user._id) {
   return res.status(401).json({ message: "User not authenticated" });
 }
@@ -53,5 +47,26 @@ const nutritionController = {
     res.status(500).json({ error: "Failed to fetch meals" });
   }
     },
+
+   async  deleteNutrition(req, res) {
+  const { id } = req.params;
+
+  try {
+    const item = await Nutrition.findById(id);
+
+    if (!item) {
+      return res.status(404).json({ error: "Nutrition item not found" });
+    }
+
+    if (!item.user.equals(req.user._id)) {
+      return res.status(403).json({ error: "Not authorized to delete this item" });
+    }
+
+    await item.deleteOne();
+    res.json({ message: "Item deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete item" });
+  }
+}
 }
 module.exports = nutritionController;

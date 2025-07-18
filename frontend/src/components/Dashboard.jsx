@@ -8,12 +8,21 @@ import {
   Avatar,
   SimpleGrid
 } from "@chakra-ui/react";
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, XAxis, YAxis, LineChart, Line} from "recharts";
 import Sidebar from "./Sidebar";
 import { workoutState } from "../Context/WorkoutProvider";
 import useThemeValues from "../hooks/useThemeValues";
+import axios from "axios";
 
-const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#8dd1e1", "#ff69b4"];
+const COLORS = [
+  "#9966FF", // Sugar - purple
+  "#FFCE56", // Fat - yellow
+  "#FF6384", // Calories - pink
+  "#36A2EB", // Carbs - blue
+  "#4BC0C0", // Protein - teal
+  "#FF9F40", // Fiber - orange
+];
+
 import { format, subDays } from "date-fns";
 
 
@@ -21,9 +30,15 @@ const Dashboard = () => {
   const [caloriesToday, setCaloriesToday] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [lastSevenDayChartData, setLastSevenDayChartData] = useState([]);
+  const [weeklyNutritionData, setWeeklyNutritionData] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const { user, workouts } = workoutState();
   const {textColor,  cardBg } = useThemeValues();
+  const [waterToday, setWaterToday] = useState(0);
+  const [items, setItems] = useState([]);
+
+
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -31,7 +46,55 @@ const Dashboard = () => {
     calculateTodayCalories();
     prepareChartData();
     lastSevenDayChart();
+    fetchWeeklyNutrition();
+    fetchWaterToday(); // 👈 Add this
+    fetchNutritionData();
+
   }, [workouts]);
+
+const totalCalories = items.reduce((sum, item) => sum + item.calories, 0);
+const totalCarbs = items.reduce((sum, item) => sum + item.carbs, 0);
+const totalProtein = items.reduce((sum, item) => sum + item.protein, 0);
+const totalFat = items.reduce((sum, item) => sum + item.fat, 0);
+const totalSugar = items.reduce((sum, item) => sum + item.sugar, 0);
+const totalFiber = items.reduce((sum, item) => sum + item.fiber, 0);
+
+const nutritionData = [
+  { name: "Calories", value: totalCalories },
+  { name: "Carbs", value: totalCarbs },
+  { name: "Protein", value: totalProtein },
+  { name: "Fat", value: totalFat },
+  { name: "Sugar", value: totalSugar },
+  { name: "Fiber", value: totalFiber },
+];
+  const fetchNutritionData = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+      const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/nutrition/getNutrition?date=${today}`, config);
+      setItems(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchWaterToday = async () => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+   const { data } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/water/getWater?date=${today}`, config);
+  setWaterToday(data?.waterGlasses || 0);
+
+  } catch (err) {
+    setWaterToday(0);
+  }
+};
 
   const lastSevenDayChart= () => {
      const past7Days = [...Array(7)].map((_, i) => {
@@ -40,7 +103,7 @@ const Dashboard = () => {
     return {
       date,
       key,
-      label: format(date, "MMM-dd"), // e.g., Jun-18
+      label: format(date, "EEE"), // e.g., Sun, Mon, Tue
       calories: 0,
     };
   }).reverse(); // So oldest comes first
@@ -60,6 +123,62 @@ const Dashboard = () => {
   
   setLoading(false);
   }
+const fetchWeeklyNutrition = async () => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+
+  const days = [...Array(7)].map((_, i) => {
+    const date = subDays(new Date(), i);
+    const key = date.toISOString().split("T")[0];
+    return {
+      date,
+      key,
+      label: format(date, "EEE"), // e.g., Sun, Mon, Tue
+      consumed: 0,
+    };
+  }).reverse();
+
+  try {
+    const promises = days.map((day) =>
+      axios.get(`${import.meta.env.VITE_SERVER_URL}/api/nutrition/getNutrition?date=${day.key}`, config)
+    );
+
+    const results = await Promise.all(promises);
+    
+
+    results.forEach((res, index) => {
+      const dayData = res.data;
+      const total = Array.isArray(dayData)
+        ? dayData.reduce((sum, item) => sum + item.calories, 0)
+        : 0;
+
+      days[index].consumed = Number(total.toFixed(2));
+
+      console.log(total);
+    });
+
+    setWeeklyNutritionData(days);
+  } catch (err) {
+    console.log("Failed to fetch weekly nutrition:", err.message);
+  }
+};
+
+
+const mergeWeeklyData = () => {
+  return lastSevenDayChartData.map((workoutDay) => {
+    const nutritionDay = weeklyNutritionData.find(n => n.label === workoutDay.label);
+    return {
+      label: workoutDay.label,
+      burned: workoutDay.calories,
+      consumed: nutritionDay?.consumed || 0,
+    };
+  });
+};
+
+
 
   const calculateTodayCalories = () => {
     
@@ -155,8 +274,130 @@ const Dashboard = () => {
     </HStack>
   </Box>
 
-  {/* 🔥 Calories Burned */}
+
+{/* 📊 Workout Summary Pie Chart */}
+  <Box
+    bg={cardBg}
+    p={2}
+    borderRadius="2xl"
+    boxShadow="2xl"
+              border="2px solid"
+              borderColor="purple.300"
+              transition="all 0.2s"
+              _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}
+    textAlign="center"
+    w="full"
+    minH="200px"
+  >
+    <Heading size="md" mb={4}>
+      Today's Workout Summary
+    </Heading>
+    {!loading && chartData.reduce((sum, item) => sum + item.calories, 0) > 0 ? (
+      <ResponsiveContainer width="100%" height={220}>
+        <PieChart>
+          <Pie
+            data={chartData}
+            dataKey="calories"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+          >
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value, name) => [`${value} kcal`, name]} />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    ) : (
+      <Text color="gray.500">No workout data for today</Text>
+    )}
+  </Box>
+ 
+{/* Nutrition Summary Pie Chart */}
+
  <Box
+  bg={cardBg}
+  p={2}
+  borderRadius="2xl"
+  boxShadow="2xl"
+  border="2px solid"
+  borderColor="purple.300"
+  transition="all 0.2s"
+  _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}
+  textAlign="center"
+  w="full"
+  minH="200px"
+>
+  <Heading size="md" mb={4}>
+    Today's Nutrition Summary
+  </Heading>
+
+  {items.length > 0 ? (
+    <ResponsiveContainer width="100%" height={250}>
+      <PieChart>
+        <Pie
+          data={nutritionData}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={90}
+        >
+          {nutritionData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip formatter={(value, name) => [`${Math.round(value)} g`, name]} />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  ) : (
+    <Text color="gray.500">No nutrition data for today</Text>
+  )}
+</Box>
+
+
+  
+</SimpleGrid>
+
+    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mt={4} px={0} width= "full" >
+
+{/* 📈 Weekly Calories: Burned vs Consumed */}
+<Box
+  width="full"
+  bg={cardBg}
+  p={1}
+  borderRadius="2xl"
+  boxShadow="2xl"
+  border="2px solid"
+  borderColor="purple.300"
+  transition="all 0.2s"
+  _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}
+>
+  <Heading size="md" textAlign="center" mb={4}>Calories Burned vs Consumed</Heading>
+
+ <ResponsiveContainer width="100%" height={250}>
+<LineChart data={mergeWeeklyData()}>
+  <XAxis dataKey="label" />
+  <YAxis label={{ value: "kcal", angle: -90, position: "insideLeft" }} />
+  <Tooltip formatter={(value) => `${value} kcal`} />
+  <Legend />
+  <Line type="monotone" dataKey="burned" stroke="#360bf3ff" name="Calories Burned" />
+  <Line type="monotone" dataKey="consumed" stroke="#da0eadff" name="Calories Consumed" />
+</LineChart>
+
+</ResponsiveContainer>
+
+</Box>
+
+
+
+  {/* 🔥 Calories Burned */}
+
+          <Box
   bg={cardBg}
   p={4}
   borderRadius="2xl"
@@ -168,7 +409,7 @@ const Dashboard = () => {
   textAlign="center"
   w="full"
   
-  minH="200px"
+  minH="150px"
 >
   <Heading size="md" mb={2}>
     Calories Burned today
@@ -210,69 +451,67 @@ const Dashboard = () => {
 </Box>
 
 
-  {/* 📊 Workout Summary Pie Chart */}
+ {/* Water Consumption for day */}
+
   <Box
-    bg={cardBg}
-    p={2}
-    borderRadius="2xl"
-    boxShadow="2xl"
+  bg={cardBg}
+  p={4}
+  borderRadius="2xl"
+  boxShadow="2xl"
               border="2px solid"
               borderColor="purple.300"
               transition="all 0.2s"
               _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}
-    textAlign="center"
-    w="full"
-    minH="200px"
-  >
-    <Heading size="md" mb={4}>
-      Today's Workout Summary
-    </Heading>
-    {!loading && chartData.reduce((sum, item) => sum + item.calories, 0) > 0 ? (
-      <ResponsiveContainer width="100%" height={220}>
-        <PieChart>
-          <Pie
-            data={chartData}
-            dataKey="calories"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={80}
-          >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(value, name) => [`${value} kcal`, name]} />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
-    ) : (
-      <Text color="gray.500">No workout data for today</Text>
-      // <Image src="/reward.webp" alt="Reward Coin" mx="auto" boxSize="100px" />
-    )}
-  </Box>
-</SimpleGrid>
- <Box width={'full'} mt={3} bg={cardBg} p={4} borderRadius="2xl" boxShadow="2xl"
-              border="2px solid"
-              borderColor="purple.300"
-              transition="all 0.2s"
-              _hover={{ boxShadow: "3xl", transform: "scale(1.01)" }}>
-          <Heading size="md" mb={4} boxShadow={"sm"}>Weekly Activity</Heading>
-          
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={lastSevenDayChartData}>
-              <XAxis dataKey="label" />
-              <YAxis label={{ value: "kcal", angle: -90, position: "insideLeft" }} />
-              <Tooltip formatter={(value) => `${value} kcal`} />
-              <Bar dataKey="calories" fill="#8884d8" radius={[10, 10, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
+  textAlign="center"
+  w="full"
+  
+  minH="150px"
+>
+ <Heading size="md" mb={2}>
+  Water Intake Today
+</Heading>
+<Box position="relative" height="160px" width="100%" mx="auto">
+  <ResponsiveContainer width="100%" height="100%">
+    <PieChart>
+      <Pie
+        data={[{ name: "Water", value: waterToday }]}
+        innerRadius={60}
+        outerRadius={80}
+        startAngle={90}
+        endAngle={-270}
+        dataKey="value"
+      >
+        <Cell fill="#00BFFF" /> {/* Blue like water */}
+      </Pie>
+    </PieChart>
+  </ResponsiveContainer>
 
-    
-        
+  <Box
+    position="absolute"
+    top="50%"
+    left="50%"
+    transform="translate(-50%, -50%)"
+    textAlign="center"
+  >
+    <Text fontSize="5xl" fontWeight="bold" color="blue.300">
+      💧
+    </Text>
+    <Text fontWeight="bold" fontSize="lg">
+      {waterToday} Glass{waterToday === 1 ? "" : "es"}
+    </Text>
+  </Box>
+</Box>
+
+</Box>
+
+ </SimpleGrid>
+
       </VStack>
     </Box>
+
+
+
+
 </HStack>
   );
 };

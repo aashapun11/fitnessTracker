@@ -28,6 +28,7 @@ function AddFoodForm() {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const mealType = searchParams.get("mealType");
+  const date = searchParams.get("date");
   const { textColor, cardBg } = useThemeValues();
 
   const navigate = useNavigate();
@@ -101,7 +102,7 @@ function AddFoodForm() {
         sugar: nutrients.sugar || 0,
         fiber: nutrients.fiber || 0,
         mealType,
-        date: new Date().toISOString().split("T")[0], // e.g. "2025-07-15"
+        date, // e.g. "2025-07-15"
 
       };
       const config = {
