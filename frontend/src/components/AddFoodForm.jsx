@@ -19,6 +19,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "./Navbar"
 import useThemeValues from "../hooks/useThemeValues";
 
+
+
 function AddFoodForm() {
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -59,7 +61,7 @@ function AddFoodForm() {
         });
       }
     };
-    const delayDebounce = setTimeout(fetchSuggestions, 1000);
+    const delayDebounce = setTimeout(fetchSuggestions, 500);
     return () => clearTimeout(delayDebounce);
   }, [search]);
 
@@ -68,6 +70,15 @@ function AddFoodForm() {
     setSelectedFood(name);
     setSuggestions([]);
   };
+
+  // Helper function to capitalize each word
+function capitalizeWords(str) {
+  return str
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 
   const handleSubmit = async () => {
     if (!selectedFood) return;
@@ -94,7 +105,7 @@ function AddFoodForm() {
 
       const newItem = {
         _id: Date.now(),
-        food: selectedFood,
+        food: capitalizeWords(selectedFood),
         calories: nutrients.calories || 0,
         carbs: nutrients.carbohydrates || 0,
         protein: nutrients.protein || 0,

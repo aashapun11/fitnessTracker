@@ -14,6 +14,7 @@ import { workoutState } from "../Context/WorkoutProvider";
 import useThemeValues from "../hooks/useThemeValues";
 import axios from "axios";
 
+
 const COLORS = [
   "#9966FF", // Sugar - purple
   "#FFCE56", // Fat - yellow
@@ -157,7 +158,6 @@ const fetchWeeklyNutrition = async () => {
 
       days[index].consumed = Number(total.toFixed(2));
 
-      console.log(total);
     });
 
     setWeeklyNutritionData(days);

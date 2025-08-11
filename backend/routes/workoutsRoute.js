@@ -6,10 +6,10 @@ const { protect } = require('../middleware/authMiddleware');
 
 router.post('/addWorkout',  protect, workoutController.addWorkout);
 router.get('/getWorkouts', protect, workoutController.getWorkouts);
-router.get('/getWorkout/:id', protect, workoutController.getWorkout);
+router.get('/getWorkout', protect, workoutController.getWorkout);
 router.delete('/deleteWorkouts', protect, workoutController.deleteWorkouts);
 router.delete('/deleteWorkout/:id', protect, workoutController.deleteWorkout);
-router.put('/updateWorkout/:id', protect, workoutController.updateWorkout);
+// router.put('/updateWorkout/:id', protect, workoutController.updateWorkout);
 
 
 

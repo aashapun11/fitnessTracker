@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require("google-auth-library");
 const axios = require('axios');
+const moment = require('moment');
 
 require('dotenv').config();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -48,6 +49,23 @@ const authController = {
 
       await user.save();
     }
+
+const todayUTC = moment.utc().startOf("day");
+
+  if (!user.lastWorkoutDate) {
+    // Never worked out before → streak is 0
+    user.streak = 0;
+  } else {
+    const lastWorkoutUTC = moment.utc(user.lastWorkoutDate).startOf("day");
+
+    // If last workout was not yesterday or today → streak broken
+    if (lastWorkoutUTC.isBefore(todayUTC.clone().subtract(1, "day"))) {
+      user.streak = 0;
+    }
+  }
+
+  await user.save();
+
 
     // Base response
     const baseUserData = {
@@ -135,6 +153,8 @@ const authController = {
             res.status(400).json({ error: error.message });
         }
     },
+
+
     async login(req, res) {
         try {
             const { username, password } = req.body;
@@ -159,6 +179,25 @@ if (user.resetPasswordToken || user.resetPasswordExpires) {
   user.resetPasswordExpires = undefined;
   await user.save(); // Save only if there's something to clear
 }
+
+const todayUTC = moment.utc().startOf("day");
+const lastWorkoutUTC = moment.utc(user.lastWorkoutDate).startOf("day");
+
+const daysDiff = todayUTC.diff(lastWorkoutUTC, "days");
+
+if (daysDiff > 1) {
+  // Missed at least one full day → reset streak
+  user.streak = 0;
+} else if (daysDiff === 1) {
+  // Worked out yesterday → increment streak
+  user.streak += 1;
+} 
+// daysDiff === 0 → worked out today → no change
+
+await user.save();
+
+
+
              const baseUserData = {
       _id: user._id,
       name: user.name,
@@ -182,6 +221,8 @@ if (user.resetPasswordToken || user.resetPasswordExpires) {
             res.status(400).json({ error: error.message });
         }
     },
+
+
     async completeProfile(req, res) {
     const { age, height, weight, sex } = req.body;
 
@@ -222,6 +263,7 @@ if (user.resetPasswordToken || user.resetPasswordExpires) {
     async updateProfile(req,res){
         const userId = req.user._id; // from token
         const updatedData = req.body;
+        
       
         try {
           const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {

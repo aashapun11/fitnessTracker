@@ -46,8 +46,16 @@ const monthlyData = useMemo(() => {
     const label = format(date, 'd');
     map[label] = { label, burned: 0, consumed: 0 };
   });
+  
+const filteredWorkouts = workouts.filter((w) => {
+  const date = parseISO(w.date); // or new Date(w.date)
+  return (
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear()
+  );
+});
 
-  workouts.forEach((w) => {
+  filteredWorkouts.forEach((w) => {
     const label = format(parseISO(w.date), 'd');
     if (map[label]) {
       map[label].burned += parseFloat(w.calories);
@@ -111,6 +119,18 @@ useEffect(() => {
   fetchNutrition();
 }, []);
 
+const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth < 768);
+  };
+
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
+
+
 
 
   return (
@@ -130,15 +150,17 @@ useEffect(() => {
     barGap={0}
     margin={{ top: 5, right: 20, left: 20, bottom: 30 }}
   >
-    <XAxis 
-      dataKey="label"
-      interval={0}
-      angle={-40}
-      textAnchor="end"
-    />
+  <XAxis
+  dataKey="label"
+  interval={isMobile ? 'preserveStartEnd' : 0}
+  angle={isMobile ? 0 : -40}
+  textAnchor={isMobile ? 'middle' : 'end'}
+/>
+
+
     <YAxis label={{ value: 'kcal', angle: -90, position: 'insideLeft' }} />
     <Tooltip formatter={(value, name) => [`${value} kcal`, name]} />
-        <Legend />
+    <Legend />
       
     <Bar dataKey="burned" fill="#8884d8" name="Calories Burned" radius={[6, 6, 0, 0]} />
     <Bar dataKey="consumed" fill="#82ca9d" name="Calories Consumed" radius={[6, 6, 0, 0]} />

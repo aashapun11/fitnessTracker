@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -13,18 +13,33 @@ import {
   MenuList,
   MenuItem,
   Tooltip,
+  IconButton,
+  VStack,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  useDisclosure,
 } from "@chakra-ui/react";
 
-import LightMode from "./LightMode";
-import { NavLink, useNavigate } from "react-router-dom";
-import { workoutState } from "../Context/WorkoutProvider";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FaFire } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router-dom";
+import LightMode from "./LightMode";
 import useThemeValues from "../hooks/useThemeValues";
+import { workoutState } from "../Context/WorkoutProvider";
+
+import {
+  FiClock
+} from "react-icons/fi";
+import { FaUtensils } from "react-icons/fa"; // meal/food
 
 function Navbar() {
   const navigate = useNavigate();
   const { user, setUser } = workoutState();
   const { cardBg, textColor } = useThemeValues();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
@@ -37,75 +52,81 @@ function Navbar() {
   const name = user?.name ?? "User";
   const streakColor = streak > 0 ? "orange.500" : "gray.400";
 
+  const NavLinks = () => (
+    <>
+      <NavLink to="/workoutForm">
+        {({ isActive }) => (
+          <Text
+            fontWeight="medium"
+            color={isActive ? "blue.500" : textColor}
+            _hover={{ color: "blue.500" }}
+          >
+            Add Exercise 💪
+          </Text>
+        )}
+      </NavLink>
+
+      <NavLink to="/smart-nutrition">
+        {({ isActive }) => (
+          <Text
+            fontWeight="medium"
+            color={isActive ? "blue.500" : textColor}
+            _hover={{ color: "blue.500" }}
+          >
+            Add Food <Icon as={FaUtensils} ml={1} />
+          </Text>
+        )}
+      </NavLink>
+
+      <NavLink to="/progressGraph">
+        {({ isActive }) => (
+          <Text
+            fontWeight="medium"
+            color={isActive ? "blue.500" : textColor}
+            _hover={{ color: "blue.500" }}
+          >
+            Progress Graph <Icon as={FiClock} ml={1} />
+          </Text>
+        )}
+      </NavLink>
+
+      <NavLink to="/workoutList">
+        {({ isActive }) => (
+          <Text
+            fontWeight="medium"
+            color={isActive ? "blue.500" : textColor}
+            _hover={{ color: "blue.500" }}
+          >
+            My Workouts 🔥
+          </Text>
+        )}
+      </NavLink>
+    </>
+  );
+
   return (
-    <Box bg={cardBg} px={4} py={3} boxShadow="md" textColor={textColor}  position="sticky" top={0} zIndex={100}>
-      <Flex align="center" justify="space-between">
-        {/* Logo + Navigation */}
-        <HStack spacing={6}>
-          {/* Logo */}
-          <Box as={NavLink} to="/dashboard">
-            <Image
-              src="/logo.png"
-              alt="Fitness Logo"
-              boxSize="40px"
-              borderRadius="full"
-              objectFit="cover"
-            />
-          </Box>
+    <Box bg={cardBg} px={4} py={3} boxShadow="md" textColor={textColor} position="sticky" top={0} zIndex={100}>
+      <Flex align="center" gap={6}> 
+        {/* Logo */}
+        <Box as={NavLink} to="/dashboard" >
+          <Image
+            src="/logo.png"
+            alt="Fitness Logo"
+            boxSize="40px"
+            borderRadius="full"
+            objectFit="cover"
+          />
+        </Box>
 
-          {/* Navigation Links */}
-          <NavLink to="/workoutForm">
-            {({ isActive }) => (
-              <Text
-                fontWeight="medium"
-                color={isActive ? "blue.500" : { textColor }}
-                _hover={{ color: "blue.500" }}
-              >
-                Add Exercise
-              </Text>
-            )}
-          </NavLink>
-
-          <NavLink to="/smart-nutrition">
-            {({ isActive }) => (
-              <Text
-                fontWeight="medium"
-                color={isActive ? "blue.500" : { textColor }}
-                _hover={{ color: "blue.500" }}
-              >
-                Add Food
-              </Text>
-            )}
-          </NavLink>
-
-          <NavLink to="/progressGraph">
-            {({ isActive }) => (
-              <Text
-                fontWeight="medium"
-                color={isActive ? "blue.500" : { textColor }}
-                _hover={{ color: "blue.500" }}
-              >
-                Progress Graph
-              </Text>
-            )}
-          </NavLink>
-
-          <NavLink to="/workoutList">
-            {({ isActive }) => (
-              <Text
-                fontWeight="medium"
-                color={isActive ? "blue.500" : { textColor }}
-                _hover={{ color: "blue.500" }}
-              >
-                My Workouts
-              </Text>
-            )}
-          </NavLink>
+        {/* Desktop Links */}
+        <HStack spacing={6} display={{ base: "none", md: "flex" }}>
+          <NavLinks />
         </HStack>
+
         <Spacer />
 
-        <Flex gap={5} align="center">
-          {/* Streak Fire Icon */}
+        <Flex gap={3} align="center">
+          {/* Fire Icon */}
           <Tooltip label="Your current workout streak!" hasArrow>
             <Flex align="center" gap={1}>
               <Icon as={FaFire} color={streakColor} boxSize={7} />
@@ -115,21 +136,51 @@ function Navbar() {
             </Flex>
           </Tooltip>
 
-          {/* Light/Dark Mode Toggle */}
+          {/* Light/Dark Toggle */}
           <LightMode />
 
-          {/* User Avatar & Menu */}
+          {/* Avatar Menu */}
           <Menu>
             <MenuButton>
-              <Avatar size="sm" boxSize={"41px"}  name={name} />
+              <Avatar size="sm" boxSize="41px" name={name} />
             </MenuButton>
             <MenuList>
               <MenuItem onClick={() => navigate("/profile")}>My Profile</MenuItem>
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
+
+          {/* Mobile Menu Button */}
+          <IconButton
+            display={{ base: "flex", md: "none" }}
+            icon={<HamburgerIcon />}
+            variant="ghost"
+            onClick={onOpen}
+            aria-label="Open Menu"
+          />
         </Flex>
       </Flex>
+
+      {/* Mobile Drawer */}
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent bg={cardBg}>
+          <DrawerHeader borderBottomWidth="1px" display="flex" justifyContent="space-between">
+            Menu
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={onClose}
+              aria-label="Close Menu"
+              size="sm"
+            />
+          </DrawerHeader>
+          <DrawerBody>
+            <VStack align="start" spacing={2} mt={4}>
+              <NavLinks />
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   );
 }

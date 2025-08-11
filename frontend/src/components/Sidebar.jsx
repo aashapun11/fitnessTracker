@@ -57,12 +57,11 @@ const Sidebar = () => {
         <Tooltip label="Progress" placement="right">
           <IconButton icon={<FiClock />} color={iconColor} bg={iconBg} onClick={() => navigate("/progressGraph")} />
         </Tooltip>
+        
         <Tooltip label="Profile" placement="right">
           <IconButton icon={<FiUser />}  color={iconColor} bg={iconBg} onClick={() => navigate("/profile")} />
         </Tooltip>
-
-      
-
+        
         <Tooltip label="Logout" placement="right">
           <IconButton icon={<FiLogOut /> } color={iconColor} bg={iconBg} onClick={logoutHandler} />
         </Tooltip>

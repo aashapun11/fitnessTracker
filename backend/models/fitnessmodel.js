@@ -5,16 +5,41 @@ const fitnessSchema = new mongoose.Schema({
        type : Date,
        required : true
    },
+   exercise_type: {
+    type: String,
+    enum: ['Cardio', 'Strength', 'WeightTraining'],
+    required: true
+  },
    activity : {
        type : String,
-       enum : ['Running','Cycling', 'Walking', 'Pushups', 'MountainClimb', 'Burpees'],
        required : true
    },
   duration : {
       type : Number,
       min : [0, 'Duration cannot be negative'],
-      required : true
+      default : null
   },
+  sets : {
+      type : Number,
+      min : [0, 'Sets cannot be negative'],
+      default : null
+  },
+  reps : {
+      type : Number,
+      min : [0, 'Reps cannot be negative'],
+      default : null
+  },
+  equipmentWeight : {
+      type : Number,
+      min : [0, 'Weight cannot be negative'],
+      default : null
+  },
+  distance : {
+      type : Number,
+      min : [0, 'Distance cannot be negative'],
+      default : null
+  },
+  
   calories : {
       type : Number,
       min : [0, 'Calories cannot be negative'],

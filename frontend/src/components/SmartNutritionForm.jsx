@@ -305,8 +305,7 @@ const handleDelete = async (id) => {
 
 
   return (
-    <Box p={4} minH="100vh" color={textColor}
->
+    <Box p={4} minH="100vh" color={textColor}>
       <Navbar />
       <Box
         maxW="900px"
@@ -327,84 +326,89 @@ const handleDelete = async (id) => {
           </Text>
 
 
-          <HStack spacing={3}>
-            <Button
-              size="sm"
-              onClick={onPrevDay}
+         <HStack spacing={3} flexWrap="wrap">
+  <Button
+    size="sm"
+    onClick={onPrevDay}
+    colorScheme="blue"
+    variant="ghost"
+    leftIcon={<ChevronLeftIcon />}
+  >
+    Prev
+  </Button>
 
-              colorScheme="blue"
-              variant="ghost"
-              leftIcon={<ChevronLeftIcon />}
-            >
-              Prev
-            </Button>
+  {/* Full Date on Desktop */}
+  <Text
+    fontWeight="semibold"
+    fontSize="md"
+    display={{ base: "none", md: "block" }}
+  >
+    {new Date(date).toLocaleDateString("en-US", {
+      weekday: "long", // Wednesday
+      year: "numeric", // 2025
+      month: "long",   // August
+      day: "numeric",  // 6
+    })}
+  </Text>
 
-            <Text fontWeight="semibold" fontSize="md">
-              {new Date(date).toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Text>
+  {/* Short Date on Mobile */}
+  <Text
+    fontWeight="semibold"
+    fontSize="md"
+    display={{ base: "block", md: "none" }}
+  >
+    {new Date(date).toLocaleDateString("en-US", {
+      weekday: "short", // Wed
+      month: "short",   // Aug
+      day: "numeric",   // 6
+      year: "numeric",  // 2025
+    })}
+  </Text>
 
-            <Button
-              size="sm"
-              onClick={onNextDay}
-              colorScheme="blue"
-              variant="ghost"
-              rightIcon={<ChevronRightIcon />}
-              isDisabled={selectedDateStart.getTime() >= today.getTime()}
-            >
-              Next
-            </Button>
-          </HStack>
-        </Flex>
+  <Button
+    size="sm"
+    onClick={onNextDay}
+    colorScheme="blue"
+    variant="ghost"
+    rightIcon={<ChevronRightIcon />}
+    isDisabled={selectedDateStart.getTime() >= today.getTime()}
+  >
+    Next
+  </Button>
+</HStack>
+</Flex>
 
         {/* Unified Table View */}
-        <Table variant="simple" size="sm">
-          <Thead bg={inputBg} p={2}>
-            <Tr>
-              <Th>Meal</Th>
-              <Th>Food</Th>
-              <Th isNumeric>Calories</Th>
-              <Th isNumeric>Carbs (g)</Th>
-              <Th isNumeric>Protein (g)</Th>
-              <Th isNumeric>Fat (g)</Th>
-              <Th isNumeric>Sugar (g)</Th>
-              <Th isNumeric>Fiber (g)</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-  {mealTypes.flatMap((mealType) => renderMealTableRows(mealType))}
-
-  {/* Grand Total Row */}
-  <Tr bg={inputBg}>
-    <Td fontWeight="bold" colSpan={2}>
-      Total
-    </Td>
-    <Td isNumeric fontWeight="bold">
-      {Math.round(overallTotals.calories)}
-    </Td>
-    <Td isNumeric fontWeight="bold">
-      {Math.round(overallTotals.carbs)}
-    </Td>
-    <Td isNumeric fontWeight="bold">
-      {Math.round(overallTotals.protein)}
-    </Td>
-    <Td isNumeric fontWeight="bold">
-      {Math.round(overallTotals.fat)}
-    </Td>
-    <Td isNumeric fontWeight="bold">
-      {Math.round(overallTotals.sugar)}
-    </Td>
-    <Td isNumeric fontWeight="bold">
-      {Math.round(overallTotals.fiber)}
-    </Td>
-  </Tr>
-</Tbody>
-
-        </Table>
+        <Box overflowX="auto">
+  <Table variant="simple" size="sm" minW="800px">
+    <Thead bg={inputBg}>
+      <Tr>
+        <Th>Meal</Th>
+        <Th>Food</Th>
+        <Th isNumeric>Calories</Th>
+        <Th isNumeric>Carbs (g)</Th>
+        <Th isNumeric>Protein (g)</Th>
+        <Th isNumeric>Fat (g)</Th>
+        <Th isNumeric>Sugar (g)</Th>
+        <Th isNumeric>Fiber (g)</Th>
+      </Tr>
+    </Thead>
+    <Tbody>
+      {/* Render meal rows */}
+      {mealTypes.flatMap((mealType) => renderMealTableRows(mealType))}
+      {/* Totals row */}
+      <Tr bg={inputBg}>
+        <Td fontWeight="bold" colSpan={2}>Total</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(overallTotals.calories)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(overallTotals.carbs)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(overallTotals.protein)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(overallTotals.fat)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(overallTotals.sugar)}</Td>
+        <Td isNumeric fontWeight="bold">{Math.round(overallTotals.fiber)}</Td>
+      </Tr>
+    </Tbody>
+  </Table>
+</Box>
 
 
       <Box mt={10} p={4} bg={cardBg} boxShadow="md" borderRadius="md" border="1px solid" borderColor="gray.200">
