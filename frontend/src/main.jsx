@@ -24,6 +24,16 @@ import Dashboard from "./components/Dashboard";
 import SmartNutritionForm from "./components/SmartNutritionForm";
 import AddFoodForm from "./components/AddFoodForm";
 
+//Listen to messages from the service worker
+navigator.serviceWorker.addEventListener("message", (event) => {
+  if (event.data?.type === "CHECK_LOGIN") {
+    const token = localStorage.getItem("token");
+    // Send the login status back to the service worker
+    event.ports[0].postMessage({ 
+      type: "LOGIN_STATUS", 
+      isLoggedIn: !!token });
+  }
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
@@ -36,9 +46,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Route path="/" element={<LandingPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/verification-pending" element={<VerificationPending />} />
-      {/* <Route path="/smart-nutrition" element={<SmartNutritionForm />} />
-      <Route path="/add-food" element={<AddFoodForm />} /> */}
-
+    
       {/* Protected routes - wrapped in WorkoutProvider */}
       <Route element={
         <WorkoutProvider>

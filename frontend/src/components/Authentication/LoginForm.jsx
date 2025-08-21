@@ -65,6 +65,7 @@ function LoginForm() {
         email,
         token,
         streak,
+        pushSubscribed,
         isProfileComplete,
         age,
         height,
@@ -78,6 +79,7 @@ function LoginForm() {
         username: uname,
         email,
         streak,
+        pushSubscribed,
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 
@@ -132,6 +134,7 @@ const handleGoogleLogin = useGoogleLogin({
         email,
         token,
         streak,
+        pushSubscribed,
         isProfileComplete,
         age,
         height,
@@ -145,6 +148,7 @@ const handleGoogleLogin = useGoogleLogin({
         username: uname,
         email,
         streak,
+        pushSubscribed,
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 
@@ -181,25 +185,21 @@ const handleGoogleLogin = useGoogleLogin({
      
 
     <Flex 
-      minH="80vh" 
-      align="center" 
-      justify="center"
-      bg={cardBg}
-      p={4}
-    >
-      
-      <Box
-        maxW="400px"
-        w="50%"
-        bg={cardBg}
-        borderRadius="2xl"
-        p={4}
-        boxShadow="2xl"
-        justifyContent={"center"}
-        alignItems={"center"}
-        textAlign={"center"}
-
-      >
+  minH="80vh" 
+  align="center" 
+  justify="center"
+  bg={cardBg}
+  p={{ base: 2, md: 4 }} // smaller padding on mobile
+>
+  <Box
+    w={{ base: "100%", sm: "90%", md: "400px" }} // mobile takes full width, desktop is fixed width
+    maxW="400px"
+    bg={cardBg}
+    borderRadius="2xl"
+    p={{ base: 4, md: 6 }} // more padding on bigger screens
+    boxShadow="2xl"
+    textAlign="center"
+  >
         <Heading mb={2} color={textColor}>Login</Heading>
         <Text mb={2}>Don't have an account? <Link 
     href="/signup" 

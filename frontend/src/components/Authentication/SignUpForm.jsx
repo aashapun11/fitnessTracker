@@ -140,6 +140,7 @@ function SignUpForm() {
         email,
         token,
         streak,
+        pushSubscribed,
         isProfileComplete,
         age,
         height,
@@ -153,6 +154,7 @@ function SignUpForm() {
         username: uname,
         email,
         streak,
+        pushSubscribed,
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 

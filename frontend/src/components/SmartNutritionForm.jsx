@@ -11,7 +11,15 @@ import {
   HStack,
   Flex,
   IconButton,
-  Tooltip 
+  Tooltip,
+   Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  useToast
 } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
@@ -20,25 +28,73 @@ import axios from "axios";
 import Navbar from "./Navbar";
 import useThemeValues  from "../hooks/useThemeValues";
 import { FiMinus } from "react-icons/fi"; // Make sure this import is present
-
-
+import { workoutState } from "../Context/WorkoutProvider";
 function SmartNutritionForm() {
   const [date, setDate] = useState(new Date());
   const [waterGlasses, setWaterGlasses] = useState();
   const [items, setItems] = useState([]);
   const { cardBg, inputBg, textColor } = useThemeValues();
+  const { user, setUser } = workoutState();
+const { isOpen, onOpen, onClose } = useDisclosure();
+const [pendingWaterClick, setPendingWaterClick] = useState(false);
+const navigate = useNavigate();
+const toast = useToast();
 
 
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
 
-  const navigate = useNavigate();
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
 
-const increaseWater = () => {
-    setWaterGlasses((prev) => Math.min(prev + 1, 20));
-  };
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
 
-  const decreaseWater = () => {
-    setWaterGlasses((prev) => Math.max(prev - 1, 0));
-  };
+async function subscribeUser() {
+  const registration = await navigator.serviceWorker.register("/sw.js");
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") return;
+
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY)
+  });
+
+const config = {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+};
+const {data} = await axios.post(
+  `${import.meta.env.VITE_SERVER_URL}/api/notifications/subscribe`,
+  subscription,
+  config
+);
+  const updatedUser = { ...user, pushSubscribed: data.pushSubscribed };
+      setUser(updatedUser);
+      localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+}
+
+const handleWaterClick = (action) => {
+  // Check if user already subscribed
+  if (!user?.pushSubscribed) {
+    setPendingWaterClick(action); // store the action to perform later
+    onOpen(); // open modal
+  } else {
+    // Just perform the action if already subscribed
+    if (action === "increase") setWaterGlasses((prev) => Math.min(prev + 1, 20));
+    if (action === "decrease") setWaterGlasses((prev) => Math.max(prev - 1, 0));
+  }
+};
+
+const increaseWater = () => handleWaterClick("increase");
+const decreaseWater = () => handleWaterClick("decrease");
 
 
 
@@ -54,11 +110,9 @@ const increaseWater = () => {
   const onNextDay = () =>
     setDate((prev) => new Date(new Date(prev).getTime() + 86400000));
 
+
+
   const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
-
-
-
-
 useEffect(() => {
   const fetchMeals = async () => {
     const selectedDateStr = date.toISOString().slice(0, 10); // "2025-07-15"
@@ -78,7 +132,13 @@ useEffect(() => {
       setItems(res.data); // Update your state
 
     } catch (err) {
-      console.error("Failed to fetch meals:", err);
+      toast({
+        title: "Error",
+        description: "Failed to fetch meals",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      })
     }
   };
 
@@ -100,7 +160,13 @@ useEffect(() => {
         );
         setWaterGlasses(res.data?.waterGlasses || 0);
       } catch (err) {
-        console.error("Failed to fetch water:", err);
+        toast({
+          title: "Error",
+          description: "Failed to fetch water",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        })
       }
     };
 
@@ -130,7 +196,13 @@ useEffect(() => {
       config
       );
       } catch (err) {
-        console.error("Failed to update water intake:", err);
+        toast({
+          title: "Error",
+          description: "Failed to save water",
+          status: "error",
+          duration: 5000,
+          isClosable: true
+        })
       }
     };
 
@@ -297,7 +369,6 @@ const handleDelete = async (id) => {
     // Update state locally without refetching
     setItems((prev) => prev.filter((item) => item._id !== id));
   } catch (err) {
-    console.error("Failed to delete item:", err);
     alert("Could not delete item. Try again later.");
   }
 };
@@ -433,18 +504,57 @@ const handleDelete = async (id) => {
           bg="blue.500"
           width={`${(waterGlasses / 8) * 100}%`}
           borderRadius="md"
-          maxW={"100%"}
-
-          
-        />
+          maxW={"100%"} />
       </Box>
     </Box>
   </Box>
 </Box>
+{/* Asking for user permission to send notifications */}
+<Modal isOpen={isOpen} onClose={onClose} isCentered>
+  <ModalOverlay />
+  <ModalContent>
+    <ModalHeader>Enable Water Reminders?</ModalHeader>
+    <ModalBody>
+      To help you stay hydrated, we can send browser notifications for water intake.
+    </ModalBody>
+    <ModalFooter>
+      <Button variant="ghost" mr={3} onClick={() => {
+        // Cancel
+        onClose();
+      }}>
+        No, Thanks
+      </Button>
+      <Button colorScheme="blue" onClick={async () => {
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission === "granted") {
+            await subscribeUser(); // your push subscription logic
+          }
+        } catch(err) {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true
+          })
+        } finally {
+          // Perform the water action after subscription attempt
+          if (pendingWaterClick === "increase") setWaterGlasses((prev) => Math.min(prev + 1, 20));
+          if (pendingWaterClick === "decrease") setWaterGlasses((prev) => Math.max(prev - 1, 0));
+          onClose();
+        }
+      }}>
+        Yes, Enable
+      </Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
+</Box>
 </Box>
 
 
-    </Box>
   );
 }
 

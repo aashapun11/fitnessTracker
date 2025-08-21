@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
     },
         minlength : [6, 'Password must be at least 6 characters']
     },
+
+  authProvider: {
+  type: String,
+  required: true,
+  default: 'local', 
+},
     age: Number,
     height: Number,
     weight: Number,
@@ -52,17 +58,29 @@ const userSchema = new mongoose.Schema({
 
   lastWorkoutDate: {
   type: Date,
-}
+},
+longestStreak: { type: Number, default: 0 },     // optional - for profile stats
+
+
+ // Push notifications
+  pushSubscribed: { type: Boolean, default: false },
+  pushSubscription: { type: Object, default: null } // stores endpoint + keys
 
 });
 
 
+
 // encrypting password
 userSchema.pre('save', async function (next) {
-    if (this.authProvider !== 'local') return next(); // skip hashing for Google
+  if (this.authProvider !== 'local') {
+    return next();
+  }
 
-  if (!this.isModified('password')) return next(); // if password is not modified
-  const salt = await bcrypt.genSalt(); // generate salt
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });

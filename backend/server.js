@@ -11,9 +11,10 @@ app.use(cors({
   credentials: true               // allows cookies or Authorization headers
 }));
 app.use(bodyParser.json());
-
 app.use(express.json());
 
+const startWaterReminderJob = require('./jobs/waterReminder');
+startWaterReminderJob();
 
 mongoose.connect(process.env.mongo_URL,{
 
@@ -26,6 +27,8 @@ app.use('/api/workouts', require('./routes/workoutsRoute'));
 app.use('/api/auth', require('./routes/authRoute'));
 app.use('/api/nutrition', require('./routes/nutritionRoute'));
 app.use('/api/water', require('./routes/waterRoute'));
+app.use('/api/notifications', require('./routes/notificationRoute'));
+
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Notification = require('../models/notificationModel');
 const generateToken = require('../utils/generateToken');
 const {sendVerificationEmail} = require('../utils/sendEmail');
 const crypto = require('crypto');
@@ -40,15 +41,30 @@ const authController = {
         authProvider: 'google',
         isVerified: true,
         streak: 0,
+        pushSubscribed: false,
         age: null,
         height: null,
         weight: null,
         sex: null,
         isProfileComplete: false,
       });
-
       await user.save();
-    }
+
+       //Set Notification for Welcome
+  const alreadyWelcomed = await Notification.findOne({
+  userId: user._id,
+  type: "welcome"
+});
+
+if (!alreadyWelcomed) {
+  await Notification.create({
+    userId: user._id,
+    title: "Welcome to Fitness Tracker! 🎉",
+    message: "We’re excited to have you! Start tracking your fitness journey today.",
+    type: "welcome"
+  });
+}
+}
 
 const todayUTC = moment.utc().startOf("day");
 
@@ -75,6 +91,7 @@ const todayUTC = moment.utc().startOf("day");
       email: user.email,
       token: generateToken(user._id),
       streak: user.streak,
+      pushSubscribed: user.pushSubscribed,
       isProfileComplete: user.isProfileComplete,
     };
 
@@ -93,26 +110,37 @@ const todayUTC = moment.utc().startOf("day");
   }
   },
 
+  //Signup the 
     async signup(req, res) {
         try {
              const { name, username, email, password } = req.body;
-            
-             
-
-            const token = crypto.randomBytes(32).toString("hex");
-
-
-
-            
+            const token = crypto.randomBytes(32).toString("hex");       
             const user = new User({name, username, email, password,
+              authProvider: 'local',  
               emailToken: token,
               tokenExpiration: Date.now() + 3600000, // 1 hour
              });
 
             await user.save();
-            const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
-           
 
+            //Set Notification for Welcome
+    const alreadyWelcomed = await Notification.findOne({
+  userId: user._id,
+  type: "welcome"
+});
+
+if (!alreadyWelcomed) {
+  await Notification.create({
+    userId: user._id,
+    title: "Welcome to Fitness Tracker! 🎉",
+    message: "We’re excited to have you! Start tracking your fitness journey today.",
+    type: "welcome"
+  });
+}
+
+//Send Verification Email
+
+            const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
            await sendVerificationEmail({
             to : email,
             subject: "Verify Your Email",
@@ -181,20 +209,20 @@ if (user.resetPasswordToken || user.resetPasswordExpires) {
 }
 
 const todayUTC = moment.utc().startOf("day");
-const lastWorkoutUTC = moment.utc(user.lastWorkoutDate).startOf("day");
 
-const daysDiff = todayUTC.diff(lastWorkoutUTC, "days");
+  if (!user.lastWorkoutDate) {
+    // Never worked out before → streak is 0
+    user.streak = 0;
+  } else {
+    const lastWorkoutUTC = moment.utc(user.lastWorkoutDate).startOf("day");
 
-if (daysDiff > 1) {
-  // Missed at least one full day → reset streak
-  user.streak = 0;
-} else if (daysDiff === 1) {
-  // Worked out yesterday → increment streak
-  user.streak += 1;
-} 
-// daysDiff === 0 → worked out today → no change
+    // If last workout was not yesterday or today → streak broken
+    if (lastWorkoutUTC.isBefore(todayUTC.clone().subtract(1, "day"))) {
+      user.streak = 0;
+    }
+  }
 
-await user.save();
+  await user.save();
 
 
 
@@ -205,6 +233,7 @@ await user.save();
       email: user.email,
       token: generateToken(user._id),
       streak: user.streak,
+      pushSubscribed: user.pushSubscribed,
       isProfileComplete: user.isProfileComplete,
     };
 
@@ -323,9 +352,7 @@ await user.save();
     });
 
     res.status(200).json({ message: "Reset link sent to your email" });
-    // res.status(200).json({ 
-    //   token
-    //  });
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

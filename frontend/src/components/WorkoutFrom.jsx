@@ -124,10 +124,9 @@ const workoutData = {
       const  {data} = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/workouts/addWorkout`, workoutData, config);
 
       const {fitness, streak} = data;
-      console.log(data);
       
      setWorkouts([...workouts, fitness]);
-     // ✅ Update user streak in context and localStorage
+     // Update user streak in context and localStorage
     const currentStreak = Number(user?.streak) || 0;
 
      if(streak > currentStreak){
@@ -160,10 +159,6 @@ toast({
       navigate("/dashboard");
 
      }
-
-
-      
-
     }catch(err){
       toast({
         title: "Error: " + err,
@@ -181,15 +176,40 @@ setFormData({
   reps: "",
   equipmentWeight: ""
 });
-
-    
-
     
   };
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+
+   useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+
+    axios.get(`${import.meta.env.VITE_SERVER_URL}/api/notifications/getNotifications`, config).then(res => {
+      const welcomeNote = res.data.find(
+        n => n.type === "welcome" && !n.isRead
+      );
+
+      if (welcomeNote) {
+        toast({
+          title: welcomeNote.title,
+          description: welcomeNote.message,
+          status: "info",
+          duration: 3000,
+          position: "top",
+          isClosable: true
+        });
+
+        axios.patch(`${import.meta.env.VITE_SERVER_URL}/api/notifications/markNotificationAsRead/${welcomeNote._id}`, {}, config);
+      }
+    });
+  }, []);
 
   return (
     <Box

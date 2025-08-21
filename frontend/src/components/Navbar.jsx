@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -20,7 +20,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerBody,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
@@ -29,17 +29,18 @@ import { NavLink, useNavigate } from "react-router-dom";
 import LightMode from "./LightMode";
 import useThemeValues from "../hooks/useThemeValues";
 import { workoutState } from "../Context/WorkoutProvider";
-
-import {
-  FiClock
-} from "react-icons/fi";
-import { FaUtensils } from "react-icons/fa"; // meal/food
+import NotificationMenu from "./NotificationMenu";
+import axios from "axios";
+import { FiClock} from "react-icons/fi";
+import { FaUtensils} from "react-icons/fa"; // meal/food
 
 function Navbar() {
   const navigate = useNavigate();
   const { user, setUser } = workoutState();
   const { cardBg, textColor } = useThemeValues();
   const { isOpen, onOpen, onClose } = useDisclosure();
+   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
@@ -51,6 +52,13 @@ function Navbar() {
   const streak = user?.streak ?? 0;
   const name = user?.name ?? "User";
   const streakColor = streak > 0 ? "orange.500" : "gray.400";
+
+  const icons = {
+    welcome: "🎉",
+    streak: "🔥",
+    reminder: "⏰"
+  };
+
 
   const NavLinks = () => (
     <>
@@ -101,8 +109,47 @@ function Navbar() {
           </Text>
         )}
       </NavLink>
+      
     </>
   );
+
+  const handleBellClick = async () => {
+    // Instantly set UI unread count to zero
+    setUnreadCount(0);
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      };
+      await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/notifications/markAllAsRead`, {}, config);
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
+
+  
+
+  useEffect(()=>{
+    const fetchNotifications = async () =>{
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+        const {data} = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/notifications/getNotifications`, config);
+        setNotifications(data);
+
+        setUnreadCount(data.filter(notification => !notification.isRead).length);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    }
+
+    fetchNotifications();
+  },[])
 
   return (
     <Box bg={cardBg} px={4} py={3} boxShadow="md" textColor={textColor} position="sticky" top={0} zIndex={100}>
@@ -139,6 +186,14 @@ function Navbar() {
           {/* Light/Dark Toggle */}
           <LightMode />
 
+
+
+
+
+          {/* //notifications */}
+
+<NotificationMenu notifications={notifications} unreadCount={unreadCount} icons={icons} handleBellClick={handleBellClick} />
+      
           {/* Avatar Menu */}
           <Menu>
             <MenuButton>
