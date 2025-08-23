@@ -53,7 +53,6 @@ const Dashboard = () => {
 
   }, [workouts]);
 
-const totalCalories = items.reduce((sum, item) => sum + item.calories, 0);
 const totalCarbs = items.reduce((sum, item) => sum + item.carbs, 0);
 const totalProtein = items.reduce((sum, item) => sum + item.protein, 0);
 const totalFat = items.reduce((sum, item) => sum + item.fat, 0);
@@ -61,7 +60,6 @@ const totalSugar = items.reduce((sum, item) => sum + item.sugar, 0);
 const totalFiber = items.reduce((sum, item) => sum + item.fiber, 0);
 
 const nutritionData = [
-  { name: "Calories", value: totalCalories },
   { name: "Carbs", value: totalCarbs },
   { name: "Protein", value: totalProtein },
   { name: "Fat", value: totalFat },
@@ -213,14 +211,14 @@ const mergeWeeklyData = () => {
 
 
   return (
-<HStack spacing={0} align="start" m={0} p={0}>
+<HStack bg={cardBg} spacing={0} align="start" m={0} p={0}>
             <Box w="60px" />  
 
 
 
       <Sidebar />
 
-        <Box bgGradient="linear(to-b, gray.100, white)"  w="100%" >
+        <Box  w="100%" >
 
 
       <VStack spacing={2} m={6} px={8} textColor={textColor}  >
@@ -232,7 +230,7 @@ const mergeWeeklyData = () => {
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} px={0} width= "full" >
   {/* 👤 User Info */}
   <Box
-    bgGradient="linear(to-r, purple.100, blue.100)"
+    // bgGradient="linear(to-r, purple.100, blue.100)"
     p={4}
     borderRadius="2xl"
     boxShadow="2xl"
@@ -330,7 +328,9 @@ const mergeWeeklyData = () => {
   textAlign="center"
   w="full"
   minH="200px"
+   
 >
+  
   <Heading size="md" mb={4}>
     Today's Nutrition Summary
   </Heading>
@@ -344,7 +344,7 @@ const mergeWeeklyData = () => {
           nameKey="name"
           cx="50%"
           cy="50%"
-          outerRadius={90}
+          outerRadius={90}      
         >
           {nutritionData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -412,7 +412,7 @@ const mergeWeeklyData = () => {
   minH="150px"
 >
   <Heading size="md" mb={2}>
-    Calories Burned today
+    Calories Burned Today
   </Heading>
   <Box position="relative" height="160px" width="100%" mx="auto">
     <ResponsiveContainer width="100%" height="100%">

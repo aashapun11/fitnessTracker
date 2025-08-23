@@ -26,7 +26,7 @@ function AddFoodForm() {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
   const [unit, setUnit] = useState("cup");
-  const [quntity, setQuntity] = useState(1);
+  const [quntity, setQuntity] = useState("1");
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const mealType = searchParams.get("mealType");
@@ -87,7 +87,7 @@ function capitalizeWords(str) {
       const { data } = await axios.post(
         `https://api.spoonacular.com/recipes/parseIngredients?apiKey=${import.meta.env.VITE_SPOONACULAR_API_KEY}&includeNutrition=true`,
         new URLSearchParams({
-          ingredientList: `${quntity} ${unit} ${selectedFood}`,
+          ingredientList: `${Number(quntity)} ${unit} ${selectedFood}`,
           servings: 1,
         }),
         {
@@ -200,7 +200,7 @@ function capitalizeWords(str) {
 
         <Box>
 <Text mb={1}>Unit:</Text>
-<Select value={unit} onChange={(e) => setUnit(e.target.value)}>
+<Select value={unit} onChange={(e) => setUnit(e.target.value)} cursor={"pointer"}>
   {/* Volume-based */}
   <option value="tablespoon">Tablespoon (tbsp)</option>
   <option value="cup">Cup</option>
@@ -222,12 +222,19 @@ function capitalizeWords(str) {
         </Box>
 
         <Box>
-          <Text mb={1}>Quntity:</Text>
+          <Text mb={1}>Quantity:</Text>
           <Input
             type="number"
             min={1}
             value={quntity}
-            onChange={(e) => setQuntity(Number(e.target.value))}
+             onChange={(e) => {
+      // Allow empty string while typing
+      const value = e.target.value;
+      // Only allow numbers or empty string
+      if (/^\d*$/.test(value)) {
+        setQuntity(value);
+      }
+    }}
           />
         </Box>
 
