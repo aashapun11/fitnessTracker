@@ -159,7 +159,14 @@ useEffect(() => {
 
 
     <YAxis label={{ value: 'kcal', angle: -90, position: 'insideLeft' }} />
-    <Tooltip formatter={(value, name) => [`${value} kcal`, name]} />
+    <Tooltip
+    key={cardBg}
+    formatter={(value, name) => [`${value} kcal`, name]} 
+    contentStyle={{
+    backgroundColor: cardBg
+  }}
+    
+    />
     <Legend />
       
     <Bar dataKey="burned" fill="#8884d8" name="Calories Burned" radius={[6, 6, 0, 0]} />

@@ -17,7 +17,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const { user, setUser } = workoutState();
    const streak = user?.streak ?? 0;
-  const {iconColor, iconBg} = useThemeValues();
+  const {cardBg, inputBg, textColor, iconColor, iconBg} = useThemeValues();
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
@@ -30,7 +30,7 @@ const Sidebar = () => {
     <Box
       h="100vh"
       w="60px"
-      bgGradient="linear(to-b, gray.100, white)"
+      bg={cardBg}
       borderRight="1px solid #e2e8f0"
       position="fixed"
       top="0"
@@ -40,7 +40,7 @@ const Sidebar = () => {
       px={2}
     
     >
-      <VStack spacing={6}>
+      <VStack spacing={12} >
         {/* Logo */}
         <Image src="/logo.png" boxSize="40px" alt="Logo" />
 
