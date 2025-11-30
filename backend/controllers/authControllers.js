@@ -7,6 +7,9 @@ const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require("google-auth-library");
 const axios = require('axios');
 const moment = require('moment');
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
+
 
 require('dotenv').config();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -27,7 +30,7 @@ const authController = {
 
     const payload = response.data;
 
-    const { name, email, sub: googleId } = payload;
+    const { name, email, sub: googleId, picture } = payload;
 
     let user = await User.findOne({ email });
 
@@ -42,6 +45,7 @@ const authController = {
         isVerified: true,
         streak: 0,
         pushSubscribed: false,
+        avatar: picture || null,
         age: null,
         height: null,
         weight: null,
@@ -92,6 +96,7 @@ const todayUTC = moment.utc().startOf("day");
       token: generateToken(user._id),
       streak: user.streak,
       pushSubscribed: user.pushSubscribed,
+      avatar: user.avatar,
       isProfileComplete: user.isProfileComplete,
     };
 
@@ -114,6 +119,20 @@ const todayUTC = moment.utc().startOf("day");
     async signup(req, res) {
         try {
              const { name, username, email, password } = req.body;
+             if (!name || !username || !email || !password) {
+                return res.status(400).json({ message: "All fields are required" });
+              }
+            const emailExists = await User.findOne({ email});
+              if (emailExists) {
+                return res.status(400).json({ message: "Email address already exists" });
+              }
+
+              const usernameExists = await User.findOne({ username });
+              if (usernameExists) {
+                return res.status(400).json({ message: "Username already exists" });
+              }
+                                        
+
             const token = crypto.randomBytes(32).toString("hex");       
             const user = new User({name, username, email, password,
               authProvider: 'local',  
@@ -121,7 +140,7 @@ const todayUTC = moment.utc().startOf("day");
               tokenExpiration: Date.now() + 3600000, // 1 hour
              });
 
-            await user.save();
+            // await user.save();
 
             //Set Notification for Welcome
     const alreadyWelcomed = await Notification.findOne({
@@ -178,6 +197,7 @@ if (!alreadyWelcomed) {
              res.status(201).json({ message: "Signup successful. Please verify your email." });
 
         } catch (error) {
+          console.log(error);
             res.status(400).json({ error: error.message });
         }
     },
@@ -201,6 +221,8 @@ if (!alreadyWelcomed) {
               if (!isMatch) {
                 return res.status(401).json({ message: "Invalid username or password" });
               }
+
+              
               // After verifying password
 if (user.resetPasswordToken || user.resetPasswordExpires) {
   user.resetPasswordToken = undefined;
@@ -223,10 +245,7 @@ const todayUTC = moment.utc().startOf("day");
   }
 
   await user.save();
-
-
-
-             const baseUserData = {
+        const baseUserData = {
       _id: user._id,
       name: user.name,
       username: user.username,
@@ -234,6 +253,7 @@ const todayUTC = moment.utc().startOf("day");
       token: generateToken(user._id),
       streak: user.streak,
       pushSubscribed: user.pushSubscribed,
+      avatar: user.avatar,
       isProfileComplete: user.isProfileComplete,
     };
 
@@ -289,11 +309,20 @@ const todayUTC = moment.utc().startOf("day");
     res.status(500).json({ message: "Server error while completing profile." });
   }
   },
+
+  //Updateing the the basic  User Information
     async updateProfile(req,res){
         const userId = req.user._id; // from token
-        const updatedData = req.body;
+        const updatedData = req.body;  
+
+        //if the duplicate username
+        if (updatedData.username) {
+          const duplicate = await User.findOne({ username: updatedData.username });
+          if (duplicate && duplicate._id.toString() !== userId) {
+            return res.status(400).json({ message: "Username already exists" });
+          }
+        }
         
-      
         try {
           const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
             new: true,
@@ -304,6 +333,49 @@ const todayUTC = moment.utc().startOf("day");
           res.status(400).json({ message: "Update failed" });
         }
     },
+
+    //Updating the user profile pic
+     async updateAvatar (req, res){
+     try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const streamUpload = (fileBuffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "avatars",
+            transformation: [{ width: 500, height: 500, crop: "limit" }],
+
+          },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
+        streamifier.createReadStream(fileBuffer).pipe(stream);
+      });
+    };
+
+    const result = await streamUpload(req.file.buffer);
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { avatar: result.secure_url },
+      { new: true }
+    );
+
+    res.json({ secure_url: result.secure_url });
+
+  } catch (err) {
+    console.error("Cloudinary upload error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+
+     },
+
+    //sending the reset password email
     async forgotPassword(req, res) {
         try {
           const { email } = req.body;
@@ -358,6 +430,8 @@ const todayUTC = moment.utc().startOf("day");
     res.status(500).json({ message: "Server error" });
   }
 },
+
+//Resetting the password
  async resetPassword(req, res) {
 
   const { token } = req.query;

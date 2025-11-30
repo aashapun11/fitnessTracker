@@ -4,6 +4,7 @@ import {
   Flex,
   Text,
   Icon,
+  Button,
   Spacer,
   Avatar,
   Image,
@@ -31,8 +32,8 @@ import useThemeValues from "../hooks/useThemeValues";
 import { workoutState } from "../Context/WorkoutProvider";
 import NotificationMenu from "./NotificationMenu";
 import axios from "axios";
-import { FiClock} from "react-icons/fi";
-import { FaUtensils} from "react-icons/fa"; // meal/food
+import { FiUser, FiLogOut} from "react-icons/fi";
+import { FaUtensils, FaDumbbell, FaChartLine} from "react-icons/fa"; // meal/food
 
 function Navbar() {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ function Navbar() {
 
   const streak = user?.streak ?? 0;
   const name = user?.name ?? "User";
+    const [preview, setPreview] = useState(user?.avatar || "");
   const streakColor = streak > 0 ? "orange.500" : "gray.400";
 
   const icons = {
@@ -69,7 +71,7 @@ function Navbar() {
             color={isActive ? "blue.500" : textColor}
             _hover={{ color: "blue.500" }}
           >
-            Add Exercise 💪
+            Add Exercise <Icon as={FaDumbbell} ml={1} />
           </Text>
         )}
       </NavLink>
@@ -93,7 +95,7 @@ function Navbar() {
             color={isActive ? "blue.500" : textColor}
             _hover={{ color: "blue.500" }}
           >
-            Progress Graph <Icon as={FiClock} ml={1} />
+            Progress Graph <Icon as={FaChartLine} ml={1} />
           </Text>
         )}
       </NavLink>
@@ -105,10 +107,12 @@ function Navbar() {
             color={isActive ? "blue.500" : textColor}
             _hover={{ color: "blue.500" }}
           >
-            My Workouts 🔥
+            My Workouts <Icon as={FaFire} ml={1} />
           </Text>
         )}
       </NavLink>
+
+      
       
     </>
   );
@@ -197,12 +201,15 @@ function Navbar() {
           {/* Avatar Menu */}
           <Menu>
             <MenuButton>
-              <Avatar size="sm" boxSize="41px" name={name} />
+              <Avatar size="sm" src={preview} boxSize="41px" name={name} />
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={() => navigate("/profile")}>My Profile</MenuItem>
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-            </MenuList>
+              <MenuItem onClick={() => navigate("/profile")}>My Profile <Icon as={FiUser} ml={1} /> </MenuItem>
+             <MenuItem 
+      onClick={logoutHandler} 
+      display={{ base: "none", md: "flex" }}>
+      Logout <Icon as={FiLogOut} ml={1} />
+    </MenuItem>            </MenuList>
           </Menu>
 
           {/* Mobile Menu Button */}
@@ -232,6 +239,19 @@ function Navbar() {
           <DrawerBody>
             <VStack align="start" spacing={2} mt={4}>
               <NavLinks />
+              <Text
+      fontWeight="medium"
+      color={textColor}
+      _hover={{ color: "blue.500", cursor: "pointer" }}
+      display={{ base: "flex", md: "none" }}
+      onClick={() => {
+        onClose();
+        logoutHandler();
+      }}
+    >
+      Logout <Icon as={FiLogOut} ml={2} mt={1}/>
+    </Text>
+           
             </VStack>
           </DrawerBody>
         </DrawerContent>

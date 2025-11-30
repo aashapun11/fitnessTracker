@@ -36,9 +36,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-
-  
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>  
   <ChakraProvider>
   <BrowserRouter>
     <Routes>
@@ -57,8 +55,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/login" element={<LoginForm />} />
             <Route path="/forgot-password" element={<ForgotPasswordForm />} />
             <Route path="/reset-password" element={<ResetPasswordForm />} />
-
-
 
             {/* Protected Routes */}
             <Route path="/complete-profile" element={

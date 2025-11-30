@@ -38,8 +38,7 @@ const Dashboard = () => {
   const {textColor,  cardBg } = useThemeValues();
   const [waterToday, setWaterToday] = useState(0);
   const [items, setItems] = useState([]);
-
-
+      const [preview, setPreview] = useState(user?.avatar || "");
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -245,7 +244,7 @@ const mergeWeeklyData = () => {
         </Text>
     <VStack spacing={2}>
      
-        <Avatar name={user?.name} boxSize={"80px"} size="xl" bg="blue.500" color="white" />
+        <Avatar src={preview} name={user?.name} boxSize={"80px"} size="xl" bg="blue.500" color="white" />
 
     
       <Box>

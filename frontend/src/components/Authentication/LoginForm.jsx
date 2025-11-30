@@ -66,6 +66,7 @@ function LoginForm() {
         token,
         streak,
         pushSubscribed,
+        avatar,
         isProfileComplete,
         age,
         height,
@@ -80,6 +81,8 @@ function LoginForm() {
         email,
         streak,
         pushSubscribed,
+        avatar,
+
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 
@@ -135,6 +138,7 @@ const handleGoogleLogin = useGoogleLogin({
         token,
         streak,
         pushSubscribed,
+        avatar,
         isProfileComplete,
         age,
         height,
@@ -149,6 +153,7 @@ const handleGoogleLogin = useGoogleLogin({
         email,
         streak,
         pushSubscribed,
+        avatar,
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 

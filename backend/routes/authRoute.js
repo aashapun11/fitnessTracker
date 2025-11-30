@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require("../controllers/authControllers");
 const emailController = require('../controllers/emailController');
 const {protect} = require('../middleware/authMiddleware');
+const upload = require("../middleware/upload");
 
 
 //Authentication
@@ -17,6 +18,9 @@ router.post('/complete-profile', protect, authController.completeProfile);
 
 //Updating the profile
 router.put('/updateProfile', protect, authController.updateProfile);
+
+//Update the profile pic
+router.put('/updateAvatar', protect, upload.single('avatar'), authController.updateAvatar);
 
 //Email verification
 router.get('/verify-email', emailController.verifyEmail);

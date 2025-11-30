@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     email : {
         type : String,
         required : true,
-        // unique : true,
+        unique : true,
         lowercase : true
     },
     password : {
@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
       return this.authProvider === 'local';
     },
         minlength : [6, 'Password must be at least 6 characters']
+    },
+
+    avatar : {
+        type : String,
+        default :""
     },
 
   authProvider: {

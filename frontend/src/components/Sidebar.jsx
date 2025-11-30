@@ -1,13 +1,6 @@
 // src/components/Sidebar.js
 import { Box, VStack, IconButton, Tooltip, Image, Icon } from "@chakra-ui/react";
-import {
-  FiCalendar, 
-  FiClock,
-  FiUser,
-  FiLogOut,
-} from "react-icons/fi";
-import { FaUtensils } from "react-icons/fa"; // meal/food
-
+import { FaDumbbell, FaUtensils, FaChartLine, FaUser, FaSignOutAlt } from "react-icons/fa"; 
 
 import { useNavigate } from "react-router-dom";
 import { workoutState } from "../Context/WorkoutProvider";
@@ -46,24 +39,24 @@ const Sidebar = () => {
 
         {/* Icons */}
       
-        <Tooltip label="Workout Form" placement="right">
-          <IconButton icon={<FiCalendar />} color={iconColor} bg={iconBg} onClick={() => navigate("/workoutForm")} />
+        <Tooltip label="Add Workout" placement="right">
+          <IconButton icon={<FaDumbbell />} color={iconColor} bg={iconBg} onClick={() => navigate("/workoutForm")} />
         </Tooltip>
 
-          <Tooltip label="Food Tracker" placement="right">
+          <Tooltip label="Add Food" placement="right">
           <IconButton icon={< FaUtensils  />} color={iconColor} bg={iconBg} onClick={() => navigate("/smart-nutrition")} />
         </Tooltip>
         
-        <Tooltip label="Progress" placement="right">
-          <IconButton icon={<FiClock />} color={iconColor} bg={iconBg} onClick={() => navigate("/progressGraph")} />
+        <Tooltip label="Track Progress" placement="right">
+          <IconButton icon={<FaChartLine />} color={iconColor} bg={iconBg} onClick={() => navigate("/progressGraph")} />
         </Tooltip>
         
         <Tooltip label="Profile" placement="right">
-          <IconButton icon={<FiUser />}  color={iconColor} bg={iconBg} onClick={() => navigate("/profile")} />
+          <IconButton icon={<FaUser />}  color={iconColor} bg={iconBg} onClick={() => navigate("/profile")} />
         </Tooltip>
         
         <Tooltip label="Logout" placement="right">
-          <IconButton icon={<FiLogOut /> } color={iconColor} bg={iconBg} onClick={logoutHandler} />
+          <IconButton icon={<FaSignOutAlt /> } color={iconColor} bg={iconBg} onClick={logoutHandler} />
         </Tooltip>
       </VStack>
     </Box>

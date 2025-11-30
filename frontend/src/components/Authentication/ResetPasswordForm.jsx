@@ -106,7 +106,12 @@ const token = searchParams.get("token"); // ✅ Correct for query param
                     </InputRightElement>
           </InputGroup>
         </FormControl>
-        <Button type="submit" colorScheme="teal" width="100%">Reset Password</Button>
+        <Button type="submit" colorScheme="blue"
+        variant="solid"
+        size="md"
+        borderRadius="md"
+        width={"full"}
+        >Reset Password</Button>
       </form>
     </Box>
   );

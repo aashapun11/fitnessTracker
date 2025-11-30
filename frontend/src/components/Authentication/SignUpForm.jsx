@@ -56,7 +56,7 @@ function SignUpForm() {
       toast({
         title: "Please fill in all fields.",
         status: "warning",
-        duration: 3000,
+        duration: 4000,
         isClosable: true,
       });
       return;
@@ -85,7 +85,7 @@ function SignUpForm() {
       toast({
         title: "Please enter a valid email address.",
         status: "warning",
-        duration: 3000,
+        duration: 5000,
         isClosable: true,
       });
       return;
@@ -94,12 +94,12 @@ function SignUpForm() {
 
     try{
       const { confirmPassword, ...userData } = formData;
-     await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/signup`, formData);
+     const {data:response} = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/signup`, formData);
       toast({
         title: "Registration successful!",
         description: "Please check your email to verify your account.",
         status: "success",
-        duration: 3000,
+        duration: 4000,
         isClosable: true,
       });
       
@@ -116,9 +116,9 @@ function SignUpForm() {
     }catch(error){
       toast({
         title: "Registration failed.",
-        description:  error.response?.data?.error || error.message,
+        description: error.response?.data?.message || error.message,
         status: "error",
-        duration: 3000,
+        duration: 5000,
         isClosable: true,
       });
     }
@@ -141,6 +141,7 @@ function SignUpForm() {
         token,
         streak,
         pushSubscribed,
+        avatar,
         isProfileComplete,
         age,
         height,
@@ -155,6 +156,7 @@ function SignUpForm() {
         email,
         streak,
         pushSubscribed,
+        avatar,
         ...(isProfileComplete && { age, height, weight, sex }),
       };
 

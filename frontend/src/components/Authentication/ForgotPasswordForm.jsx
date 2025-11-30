@@ -46,7 +46,12 @@ function ForgotPasswordForm() {
             required
           />
         </FormControl>
-        <Button type="submit" colorScheme="blue" width="100%">Send Reset Link</Button>
+        <Button type="submit"    
+        colorScheme="blue"
+        variant="solid"
+        size="md"
+        borderRadius="md"
+        width="100%">Send Reset Link</Button>
       </form>
     </Box>
   );
