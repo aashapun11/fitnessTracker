@@ -1,71 +1,121 @@
-# 🏋️ Fitness Tracker Web App
+# 🏋️ Fitness Tracker Web App — MERN Stack
 
-**Next‑level fitness tracker** is a full-stack web app built with the MERN stack. It helps you log workouts, track your calorie burn, maintain daily streaks and all in one beautifully designed dashboard.
+Fitness Tracker is a full-stack MERN web application that helps users track workouts, nutrition, calories, water intake, and progress — all in one clean and interactive dashboard.
 
-
-🌐 **Live Site:** [fitnesstracker-frontend-lgz6.onrender.com](https://fitnesstracker-frontend-lgz6.onrender.com/)  
+🌐 **Live Site:** https://fitnesstracker-frontend-lgz6.onrender.com  
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-- 👤 **User Registration & Login** (with JWT auth)
-- 📧 **Email Verification** after signup
-- 🔐 **Forgot Password** feature via email reset link
-- 🏋️‍♂️ **Log Workouts** with type, duration & date
-- 🔥 **Automatic Calorie Burn Calculation** using MET values
-- 📈 **Dashboard**:
-  - Total calories burned today
-  - Visual charts (pie chart & progress graphs)
-- 💪 **Workout Streaks** with sound + reward modal
-- 🌗 **Light/Dark Mode** with Chakra UI
-- 🗃️ **Workout History** with filters
+### 🔐 Authentication
+- User Signup & Login (JWT)
+- Email verification on signup
+- Forgot Password + Reset Link (Nodemailer + Brevo)
+- Secure password hashing using bcrypt
+
+---
+
+## 🏋️ Workouts Module
+- Add workouts with:
+  - Type  
+  - Duration  
+  - Date  
+- Automatic **calorie burn calculation** using MET values
+- Edit & delete workouts
+- Workout history with filters
+- Daily & total calorie burned tracking
+- **Workout streak system** with sound + reward modal
+
+---
+
+## 🥗 Nutrition Tracking *(New!)*
+- Search foods using **Spoonacular API**
+- Fetch:
+  - Calories  
+  - Protein / Carbs / Fat  
+  - Serving size + accurate units  
+- Add meals to Breakfast, Lunch, Dinner, Snacks
+- Daily calorie consumed tracking
+- Macro indicators & meal cards
+- Backend validation of units
+
+---
+
+## 💧 Water Intake Tracking *(New!)*
+- Add glasses or mL of water
+- Stored in a **separate MongoDB model**
+- Daily water progress bar
+- Quick-add UI buttons
+
+---
+
+## 📊 Data Visualization
+- **7-day calorie burned vs consumed line chart**
+- **Monthly calorie comparison bar chart**
+- Pie chart for daily macros
+- Progress stats for:
+  - Workouts  
+  - Nutrition  
+  - Water  
+  - Streak consistency  
+
+---
+
+## 🧭 Dashboard
+- Today's calories burned & consumed
+- Total water intake
+- Workout streak count
+- Quick-action buttons
+- Dark/Light mode support (Chakra UI)
+- Fully responsive layout
 
 ---
 
 ## 🛠️ Tech Stack
 
-### 💻 Frontend
-
+### Frontend
 - React (Vite)
 - Chakra UI
 - Axios
-- React Router
+- React Router DOM
 - Recharts
 - use-sound
 
-### 🌐 Backend
-
+### Backend
 - Node.js + Express
 - MongoDB Atlas + Mongoose
-- Nodemailer + Brevo (email services)
-- JWT (Authentication)
-- bcrypt (Password hashing)
-- dotenv, cors, validator
+- Nodemailer + Brevo
+- Spoonacular API
+- JWT Authentication
+- bcrypt
+- CORS, dotenv, validator
 
 ---
 
 ## 📸 Screenshots
 
-![image](https://github.com/user-attachments/assets/5a1e7e0a-a37b-4c5f-a069-a1c9eb913bb8)
-![image](https://github.com/user-attachments/assets/10280ff1-4b44-4d6e-a061-092c450176fa)
-![image](https://github.com/user-attachments/assets/07867b4c-abe0-471e-abf7-16d190b44176)
-![image](https://github.com/user-attachments/assets/73aa474f-2920-4d12-a8f1-63be3bd935db)
-![image](https://github.com/user-attachments/assets/ae696886-ed38-4c3b-9c28-2b50d1b91462)
+![alt text](<Screenshot 2025-12-02 at 12.47.05.png>)
+![alt text](<Screenshot 2025-12-02 at 12.47.05-1.png>)
+![alt text](<Screenshot 2025-12-02 at 12.47.05-2.png>)
+![alt text](<Screenshot 2025-12-02 at 12.47.05-3.png>)
 
 
 ---
 
-## 💡 To-Do / Enhancements
-- 📅 Weekly & monthly workout trends
-- 🥗 Nutrition logging
-- 🔔 Workout reminders
-- 🧠 AI-powered workout suggestion
+## 🔮 Future Enhancements
+
+- AI-powered workout plans
+- AI diet suggestions
+- Push notifications
+- Before/after progress photos
+- Premium plan + payment integration
+
 
 ---
 
 ## 🙏 Acknowledgments
-This project was built by Aasha Pun
+Built with ❤️ by Aasha Pun
 Guidance & code review supported by OpenAI’s ChatGPT 🚀
 
 
