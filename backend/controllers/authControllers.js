@@ -140,7 +140,7 @@ const todayUTC = moment.utc().startOf("day");
               tokenExpiration: Date.now() + 3600000, // 1 hour
              });
 
-            // await user.save();
+            await user.save();
 
             //Set Notification for Welcome
     const alreadyWelcomed = await Notification.findOne({

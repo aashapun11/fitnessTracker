@@ -38,20 +38,28 @@ function WorkoutList() {
 
     // Calculate totals
   let totalTime = 0;
-  let totalExercises = filteredWorkouts.length;
-  let totalCalories = 0;
-  let totalSets = 0;
+let totalExercises = filteredWorkouts.length;
+let totalCalories = 0;
+let totalSets = 0;
 
-  filteredWorkouts.forEach((w) => {
-    if (w.exercise_type === "Cardio") {
-      totalTime += Number(w.duration) || 0;
-      totalCalories += Number(w.calories) || 0;
-    } else {
-      totalSets += Number(w.sets) || 0;
-    }
-  });
+filteredWorkouts.forEach((w) => {
+  // Always count calories if present
+  totalCalories += Number(w.calories) || 0;
 
-  setTotals({ totalTime, totalExercises, totalCalories, totalSets });
+  if (w.exercise_type === "Cardio") {
+    totalTime += Number(w.duration) || 0;
+  } else {
+    totalSets += Number(w.sets) || 0;
+  }
+});
+
+// Optional: round once at the end
+setTotals({
+  totalTime,
+  totalExercises,
+  totalCalories: Number(totalCalories.toFixed(2)),
+  totalSets,
+});
     }, [workouts, selectedDate]);
     
     
@@ -89,7 +97,7 @@ function WorkoutList() {
       boxShadow="sm"
     >
       <Text fontSize="sm" color={textColor}>
-        Total Time
+        Active Time
       </Text>
       <Text fontSize="lg" fontWeight="bold" color={textColor}>
         {totals.totalTime} mins
@@ -119,7 +127,7 @@ function WorkoutList() {
       boxShadow="sm"
     >
       <Text fontSize="sm" color={textColor}>
-        Calories
+        Calories Burned
       </Text>
       <Text fontSize="lg" fontWeight="bold" color={textColor}>
         {totals.totalCalories} kcal

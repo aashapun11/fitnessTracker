@@ -36,29 +36,34 @@ const fitnessController = {
          // 2. Update streak
 
 const user = await User.findById(userId);
-const todayUTC = moment.utc().startOf("day");
-  const workoutUTC = moment.utc(user.lastWorkoutDate).startOf("day");
-  
-  
-  if (!user.lastWorkoutDate) {
-    // First ever workout
+
+const today = moment().format("YYYY-MM-DD");
+
+if (!user.lastWorkoutDate) {
+  // First ever workout
+  user.streak = 1;
+} else {
+  const diff = moment(today).diff(
+    moment(user.lastWorkoutDate),
+    "days"
+  );
+
+  if (diff === 1) {
+    // Consecutive day
+    user.streak += 1;
+  } else if (diff > 1) {
+    // Missed one or more days
     user.streak = 1;
-  } else {
-    const lastWorkoutUTC = moment.utc(user.lastWorkoutDate).startOf("day");
-
-    if (lastWorkoutUTC.isSame(todayUTC.clone().subtract(1, "day"))) {
-      // Consecutive day → increase streak
-      user.streak += 1;
-    } else {
-      // Missed a day → reset streak to 1
-      user.streak = 1;
-    }
   }
+  // diff === 0 → same day, streak unchanged
+}
 
-  // Update last workout date
-  user.lastWorkoutDate = moment.utc().toDate();
-  user.longestStreak = Math.max(user.streak, user.longestStreak);
-  await user.save();
+// Update last workout day
+user.lastWorkoutDate = today;
+user.longestStreak = Math.max(user.streak, user.longestStreak);
+
+await user.save();
+
 
   if ([7, 15, 30].includes(user.streak)) {
   await Notification.create({

@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
   },
 
   lastWorkoutDate: {
-  type: Date,
+  type: String,
 },
 longestStreak: { type: Number, default: 0 },     // optional - for profile stats
 

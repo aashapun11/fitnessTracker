@@ -161,7 +161,7 @@ useEffect(() => {
     <YAxis label={{ value: 'kcal', angle: -90, position: 'insideLeft' }} />
     <Tooltip
     key={cardBg}
-    formatter={(value, name) => [`${value} kcal`, name]} 
+    formatter={(value, name) => [`${Number(value).toFixed(2)} kcal`, name]} 
     contentStyle={{
     backgroundColor: cardBg
   }}

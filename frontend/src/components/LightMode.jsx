@@ -6,6 +6,10 @@ import { FaMoon, FaSun } from "react-icons/fa"; // ✨ Icons
 function LightMode() {
     const { colorMode, toggleColorMode } = useColorMode(); // ✨ Hook
 
+    // useColorMode controls the global color mode state,
+    //  toggleColorMode updates it, and
+    //  useColorModeValue derives theme values based on the current color mode.
+
   return (
     <HStack w="full" justifyContent="flex-end">
 

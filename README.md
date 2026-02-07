@@ -94,20 +94,20 @@ Fitness Tracker is a full-stack MERN web application that helps users track work
 ---
 
 ## 📸 Screenshots
+![alt text](frontend/assets/dashboard.png)
+![alt text](frontend/assets/signup.png)
+![alt text](frontend/assets/workoutSummary.png)
+![alt text](frontend/assets/nutrition.png)
+![alt text](frontend/assets/dashboard.png)
+![alt text](frontend/assets/progress.png)
 
-![alt text](image.png)
-![alt text](image-7.png)
-![alt text](image-1.png)
-![alt text](image-3.png)
-![alt text](image-4.png)
-![alt text](image-8.png)
 
 ## 🔮 Future Enhancements
 
 - AI-powered workout plans
 - AI diet suggestions
 - Push notifications
-- Before/after progress photos
+- Before/after progress photossr
 - Premium plan + payment integration
 
 
