@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Stack, HStack, Flex,Box, Text,  Button, Heading, useToast, SimpleGrid, Grid} from '@chakra-ui/react'
+import { Stack, HStack,Box, Text,  Button, Heading, useToast, SimpleGrid, Grid} from '@chakra-ui/react'
 import useThemeValues from '../hooks/useThemeValues'
 import { workoutState } from '../Context/WorkoutProvider'
 import axios from 'axios'
-import { NavLink, useNavigate} from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import DateSelector from './DateSelector'
 import Navbar from './Navbar'
 
@@ -45,12 +45,12 @@ let totalSets = 0;
 filteredWorkouts.forEach((w) => {
   // Always count calories if present
   totalCalories += Number(w.calories) || 0;
+  totalTime += Number(w.duration) || 0;
 
-  if (w.exercise_type === "Cardio") {
-    totalTime += Number(w.duration) || 0;
-  } else {
-    totalSets += Number(w.sets) || 0;
-  }
+
+  if (w.exercise_type === "Strength") {
+        totalSets += Number(w.sets) || 0;
+      } 
 });
 
 // Optional: round once at the end
@@ -65,10 +65,10 @@ setTotals({
     
 
   return (
-  <Box minH="100vh" bg={cardBg} p={6}>
+  <Box minH="100vh" bg={cardBg} p={6} color={textColor}>
     <Navbar />
 
-<Heading color={textColor} size="lg" justifyContent={"center"} textAlign={"center"} m={4}>
+<Heading  size="lg" justifyContent={"center"} textAlign={"center"} m={4}>
         My Workouts Summary
       </Heading>
   <Box maxW="1000px" mx="auto" mt={4} >
@@ -178,28 +178,34 @@ setTotals({
               transition="all 0.2s"
               _hover={{ boxShadow: "xl", transform: "scale(1.01)" }}
             >
-              {(w.exercise_type === "Cardio") ?(
-                <Stack spacing={2} mb={4} textAlign="left">
-                <Text><b>Activity:</b> {w.activity}</Text>
-                <Text><b>Duration:</b> {w.duration} <b>Minutes</b></Text>
-                <Text color="purple.600" fontWeight="bold"><b>Calories Burned:</b> 🔥 {w.calories}</Text>
-              </Stack> 
-               ): (
-                 <Stack spacing={2} mb={4} textAlign="left">
-                <Text><b>Activity:</b> {w.activity}</Text>
-                <Text><b>Sets:</b> {w.sets}</Text>
-                <Text><b>Reps:</b> {w.reps}</Text>
-              </Stack> 
+            <Stack spacing={2} mb={4} textAlign="left">
+  <Text><b>Activity:</b> {w.activity}</Text>
+  <Text><b>Type:</b> {w.exercise_type}</Text>
 
-               )}
+  {w.duration && (
+    <Text><b>Duration:</b> {w.duration} <b>Minutes</b></Text>
+  )}
+
+  {(w.sets || w.reps) && (
+    <>
+      {w.sets && <Text><b>Sets:</b> {w.sets}</Text>}
+      {w.reps && <Text><b>Reps:</b> {w.reps}</Text>}
+    </>
+  )}
+
+  {w.calories && (
+    <Text color="purple.600" fontWeight="bold">
+      <b>Calories Burned:</b> 🔥 {w.calories}
+    </Text>
+  )}
+</Stack>
+
               
 
               <HStack spacing={4} justifyContent="left">
                 <Button
                   size="sm"
-                  bgGradient="linear(to-r, purple.400, blue.400)"
-                  _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-                  color="white"
+                  variant={"primary"}
                   onClick={async () => {
                     const confirmDelete = window.confirm("Are you sure you want to delete this record?");
                     if (!confirmDelete) return;

@@ -8,9 +8,7 @@ import {
   VStack,
   SimpleGrid,
   Icon,
-  Image,
-  Stack,
-  HStack,
+  Image
 } from "@chakra-ui/react";
 import { motion, px } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -18,8 +16,8 @@ import {
   FaRunning,
   FaBicycle,
   FaChartLine,
-  FaFireAlt,
-  FaClipboardList,
+  FaUtensils,
+  FaClipboardList
 } from "react-icons/fa";
 import { GiBodyBalance } from "react-icons/gi";
 import Footer from "./Footer";
@@ -36,8 +34,8 @@ const popularExercises = [
 
 const features = [
   { icon: FaClipboardList, title: "Log Workouts", description: "Easily log your daily workouts" },
+  { icon: FaUtensils, title: "Track Nutrition", description: "Log meals with real nutrition data via API" },
   { icon: FaChartLine, title: "Track Progress", description: "Monitor your fitness journey" },
-  { icon: FaFireAlt, title: "Burn Calories", description: "Set goals and burn more calories" },
 ];
 
 

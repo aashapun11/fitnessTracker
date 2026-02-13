@@ -33,7 +33,7 @@ function SmartNutritionForm() {
   const [date, setDate] = useState(new Date());
   const [waterGlasses, setWaterGlasses] = useState();
   const [items, setItems] = useState([]);
-  const { cardBg, inputBg, textColor } = useThemeValues();
+  const { cardBg, inputBg, textColor, theadColor, theadBg, numberColor} = useThemeValues();
   const { user, setUser } = workoutState();
 const { isOpen, onOpen, onClose } = useDisclosure();
 const [pendingWaterClick, setPendingWaterClick] = useState(false);
@@ -252,8 +252,7 @@ useEffect(() => {
         <Td colSpan={8}>
           <Button
   size="sm"
-  colorScheme="blue"
-  variant="outline"
+  variant={"secondary"}
   onClick={() => navigate(`/add-food?mealType=${mealType}&date=${date.toISOString().slice(0, 10)}`)}
 >
   Add Food
@@ -273,12 +272,12 @@ useEffect(() => {
             </Td>
           )}
           <Td>{item.food}</Td>
-          <Td isNumeric>{Math.round(item.calories)}</Td>
-          <Td isNumeric>{Math.round(item.carbs)}</Td>
-          <Td isNumeric>{Math.round(item.protein)}</Td>
-          <Td isNumeric>{Math.round(item.fat)}</Td>
-          <Td isNumeric>{Math.round(item.sugar)}</Td>
-          <Td isNumeric>{Math.round(item.fiber)}</Td>
+          <Td isNumeric color={numberColor}>{Math.round(item.calories)}</Td>
+          <Td isNumeric color={numberColor}>{Math.round(item.carbs)}</Td>
+          <Td isNumeric color={numberColor}>{Math.round(item.protein)}</Td>
+          <Td isNumeric color={numberColor}>{Math.round(item.fat)}</Td>
+          <Td isNumeric color={numberColor}>{Math.round(item.sugar)}</Td>
+          <Td isNumeric color={numberColor}>{Math.round(item.fiber)}</Td>
           <Td>
   <Tooltip label="Delete" hasArrow bg="red.500" color="white">
     <IconButton
@@ -302,8 +301,7 @@ useEffect(() => {
         <Td colSpan={1}>
           <Button
   size="sm"
-  colorScheme="blue"
-  variant="outline"
+  variant="secondary"
     onClick={() => navigate(`/add-food?mealType=${mealType}&date=${date.toISOString().slice(0, 10)}`)}
 
 >
@@ -311,12 +309,12 @@ useEffect(() => {
 </Button>
 
         </Td>
-        <Td isNumeric fontWeight="bold">{Math.round(total.calories)}</Td>
-        <Td isNumeric fontWeight="bold">{Math.round(total.carbs)}</Td>
-        <Td isNumeric fontWeight="bold">{Math.round(total.protein)}</Td>
-        <Td isNumeric fontWeight="bold">{Math.round(total.fat)}</Td>
-        <Td isNumeric fontWeight="bold">{Math.round(total.sugar)}</Td>
-        <Td isNumeric fontWeight="bold">{Math.round(total.fiber)}</Td>
+        <Td isNumeric fontWeight="bold" color={numberColor}>{Math.round(total.calories)}</Td>
+        <Td isNumeric fontWeight="bold" color={numberColor}>{Math.round(total.carbs)}</Td>
+        <Td isNumeric fontWeight="bold" color={numberColor}>{Math.round(total.protein)}</Td>
+        <Td isNumeric fontWeight="bold" color={numberColor}>{Math.round(total.fat)}</Td>
+        <Td isNumeric fontWeight="bold" color={numberColor}>{Math.round(total.sugar)}</Td>
+        <Td isNumeric fontWeight="bold" color={numberColor}>{Math.round(total.fiber)}</Td>
       </Tr>
     );
   }
@@ -392,7 +390,7 @@ const handleDelete = async (id) => {
       >
         {/* Date Header */}
         <Flex justify="center" align="center" mb={6} wrap="wrap" gap={2} bg={inputBg} p={2} borderRadius={"md"}>
-          <Text fontWeight="bold" fontSize="2xl" color="blue.600">
+          <Text fontWeight="bold" fontSize="2xl" color={textColor}>
             Your Food Diary For:
           </Text>
 
@@ -401,7 +399,7 @@ const handleDelete = async (id) => {
   <Button
     size="sm"
     onClick={onPrevDay}
-    colorScheme="blue"
+    color={"orange.500"}
     variant="ghost"
     leftIcon={<ChevronLeftIcon />}
   >
@@ -439,7 +437,7 @@ const handleDelete = async (id) => {
   <Button
     size="sm"
     onClick={onNextDay}
-    colorScheme="blue"
+    color={"orange.500"}
     variant="ghost"
     rightIcon={<ChevronRightIcon />}
     isDisabled={selectedDateStart.getTime() >= today.getTime()}
@@ -451,17 +449,18 @@ const handleDelete = async (id) => {
 
         {/* Unified Table View */}
         <Box overflowX="auto">
-  <Table variant="simple" size="sm" minW="800px">
-    <Thead bg={inputBg}>
+  <Table size="sm" minW="800px">
+    <Thead bg={theadBg}>
       <Tr>
-        <Th>Meal</Th>
-        <Th>Food</Th>
-        <Th isNumeric>Calories</Th>
-        <Th isNumeric>Carbs (g)</Th>
-        <Th isNumeric>Protein (g)</Th>
-        <Th isNumeric>Fat (g)</Th>
-        <Th isNumeric>Sugar (g)</Th>
-        <Th isNumeric>Fiber (g)</Th>
+        <Th color={theadColor}>Meal</Th>
+        <Th color={theadColor}>Food</Th>
+        <Th isNumeric color={theadColor}>Calories</Th>
+        <Th isNumeric color={theadColor}>Carbs (g)</Th>
+        <Th isNumeric color={theadColor}>Protein (g)</Th>
+        <Th isNumeric color={theadColor}>Fat (g)</Th>
+        <Th isNumeric color={theadColor}>Sugar (g)</Th>
+        <Th isNumeric color={theadColor}>Fiber (g)</Th>
+        <Th color={theadColor}></Th>
       </Tr>
     </Thead>
     <Tbody>
@@ -488,11 +487,12 @@ const handleDelete = async (id) => {
   </Text>
 
   <Flex align="center" gap={4}>
-    <Button onClick={decreaseWater} colorScheme="blue" variant="outline" size="sm">-</Button>
+    <Button onClick={decreaseWater} variant="outline" size="sm" borderColor="orange.500" color="orange.500"
+    _hover={{ bg: "orange.500", color: "white"}}>-</Button>
 
     <Text fontSize="md">{waterGlasses} Glass{waterGlasses !== 1 && 'es'}</Text>
 
-    <Button onClick={increaseWater} colorScheme="blue" size="sm">+</Button>
+    <Button onClick={increaseWater} size="sm" bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>+</Button>
   </Flex>
 
   <Box mt={3}>
@@ -501,7 +501,7 @@ const handleDelete = async (id) => {
       <Box bg="gray.200" h="6px" w="100%" borderRadius="md">
         <Box
           h="6px"
-          bg="blue.500"
+          bg="purple.500"
           width={`${(waterGlasses / 8) * 100}%`}
           borderRadius="md"
           maxW={"100%"} />
@@ -524,7 +524,7 @@ const handleDelete = async (id) => {
       }}>
         No, Thanks
       </Button>
-      <Button colorScheme="blue" onClick={async () => {
+      <Button colorScheme="orange" onClick={async () => {
         try {
           const permission = await Notification.requestPermission();
           if (permission === "granted") {

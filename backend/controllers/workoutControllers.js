@@ -6,7 +6,7 @@ const moment = require("moment");
 const fitnessController = {
 
     async addWorkout(req, res){
-        const { date,exercise_type, activity,  duration, sets, reps, equipmentWeight, calories } = req.body;
+        const { date,exercise_type, activity,  duration, sets, reps, intensity, calories } = req.body;
         
 
         if(exercise_type === "Cardio"){
@@ -15,19 +15,14 @@ const fitnessController = {
             }
         }
         else if(exercise_type === "Strength"){
-            if (!date || !activity || !sets || !reps) {
-                return res.status(400).json("Please fill in all fields.");
-            }
-        }
-        else if(exercise_type === "WeightTraining"){
-            if (!date || !activity ||  !sets || !reps || !equipmentWeight) {
+            if (!date || !activity || !duration|| !intensity) {
                 return res.status(400).json("Please fill in all fields.");
             }
         }
        
         const userId = req.user._id; // set by JWT middleware
         try{
-           const fitness = new Fitness({ date, exercise_type, activity, duration, sets, reps, equipmentWeight, calories,
+           const fitness = new Fitness({ date, exercise_type, activity, duration, sets, reps, intensity, calories,
             user: userId, // ✅ associate with logged-in user
         });
              await fitness.save();

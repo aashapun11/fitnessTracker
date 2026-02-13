@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import { ChakraProvider} from "@chakra-ui/react";
 import { BrowserRouter,Routes, Route } from "react-router-dom";
 import {GoogleOAuthProvider } from '@react-oauth/google';
+import theme from "./theme";
+import "./index.css";
 
 import ProgressGraph from "./components/MyProgressGraph";
 import WorkoutList from "./components/WorkoutList";
@@ -37,7 +39,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>  
-  <ChakraProvider>
+  <ChakraProvider theme={theme}>
   <BrowserRouter>
     <Routes>
       {/* Public route - no WorkoutProvider */}

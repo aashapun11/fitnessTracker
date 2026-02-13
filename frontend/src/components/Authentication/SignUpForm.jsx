@@ -7,7 +7,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Select,
   Heading,
   VStack,
   useToast,
@@ -26,7 +25,7 @@ import { workoutState } from "../../Context/WorkoutProvider";
 
 
 function SignUpForm() {
-  const { cardBg, inputBg, textColor } = useThemeValues();
+  const { cardBg, inputBg, textColor, inputTextColor} = useThemeValues();
   const toast = useToast();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -192,13 +191,13 @@ function SignUpForm() {
       <Heading textAlign="center" mb={2} color={textColor}>
         Sign Up
       </Heading>
-      <Text mb={4}>Already have an account? <Link 
+      <Text mb={4} color={textColor}>Already have an account? <Link 
           href="/login" 
           fontWeight="bold" 
           fontSize="lg" 
           textDecoration="underline"
-          color={textColor}
-          _hover={{ color: "blue.700" }}
+          color="orange.400"
+          _hover={{ color: "orange.700" }}
         >  Login
         </Link></Text>
 
@@ -215,7 +214,7 @@ function SignUpForm() {
         />
       }
       variant="outline"
-      colorScheme="blue"
+      borderRadius="2xl"  
       width="100%"
     >
       Sign Up with Google
@@ -244,7 +243,7 @@ function SignUpForm() {
               value={formData.name}
               onChange={changeHandler}
               bg={inputBg}
-              color={textColor}
+              color={inputTextColor}
             />
           </FormControl>
           <FormControl>
@@ -254,7 +253,7 @@ function SignUpForm() {
               value={formData.username}
               onChange={changeHandler}
               bg={inputBg}
-              color={textColor}
+              color={inputTextColor}
             />
           </FormControl>
 
@@ -266,7 +265,7 @@ function SignUpForm() {
               value={formData.email}
               onChange={changeHandler}
               bg={inputBg}
-              color={textColor}
+              color={inputTextColor}
             />
           </FormControl>
 
@@ -277,7 +276,7 @@ function SignUpForm() {
             name="password"
             type={showPassword ? "text" : "password"}
             bg={inputBg}
-            color={textColor}
+            color={inputTextColor}
             border="1px solid blackAlpha.300"
             value={formData.password}
             onChange={changeHandler}
@@ -304,7 +303,7 @@ function SignUpForm() {
             name="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
             bg={inputBg}
-            color={textColor}
+            color={inputTextColor}
             border="1px solid blackAlpha.300"
             value={formData.confirmPassword}
             onChange={changeHandler}
@@ -328,9 +327,8 @@ function SignUpForm() {
           <Button
             type="submit"
             w="100%"
-            bgGradient="linear(to-r, purple.400, blue.400)"
-            _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-            color="white"
+            variant="primary"
+            size="md"
           >
             Register
           </Button>

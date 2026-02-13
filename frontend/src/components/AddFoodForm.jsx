@@ -31,7 +31,7 @@ function AddFoodForm() {
   const [searchParams] = useSearchParams();
   const mealType = searchParams.get("mealType");
   const date = searchParams.get("date");
-  const { textColor, cardBg } = useThemeValues();
+  const { textColor, cardBg ,inputTextColor} = useThemeValues();
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -168,6 +168,7 @@ function capitalizeWords(str) {
           <Input
             placeholder="e.g. rice, tomato soup..."
             value={search}
+            color={inputTextColor}
             onChange={(e) => {
               setSearch(e.target.value);
               setSelectedFood(null);
@@ -200,7 +201,7 @@ function capitalizeWords(str) {
 
         <Box>
 <Text mb={1}>Unit:</Text>
-<Select value={unit} onChange={(e) => setUnit(e.target.value)} cursor={"pointer"}>
+<Select value={unit} onChange={(e) => setUnit(e.target.value)} color={inputTextColor} cursor={"pointer"}>
   {/* Volume-based */}
   <option value="tablespoon">Tablespoon (tbsp)</option>
   <option value="cup">Cup</option>
@@ -226,6 +227,7 @@ function capitalizeWords(str) {
           <Input
             type="number"
             min={1}
+            color={inputTextColor}
             value={quntity}
              onChange={(e) => {
       // Allow empty string while typing
@@ -240,9 +242,7 @@ function capitalizeWords(str) {
 
         <Button 
     
-              bgGradient="linear(to-r, purple.400, blue.400)"
-              _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-              color={textColor}
+              variant={"primary"}
               w="100%"
               onClick={handleSubmit} isLoading={loading}>
           Add Food

@@ -51,9 +51,7 @@ function Navbar() {
   };
 
   const streak = user?.streak ?? 0;
-  const name = user?.name ?? "User";
-    const [preview, setPreview] = useState(user?.avatar || "");
-  const streakColor = streak > 0 ? "orange.500" : "gray.400";
+  const streakColor = streak > 0 ? "purple.500" : "gray.400";
 
   const icons = {
     welcome: "🎉",
@@ -68,8 +66,8 @@ function Navbar() {
         {({ isActive }) => (
           <Text
             fontWeight="medium"
-            color={isActive ? "blue.500" : textColor}
-            _hover={{ color: "blue.500" }}
+            color={isActive ? "orange.500" : textColor}
+            _hover={{ color: "orange.500" }}
           >
             Add Exercise <Icon as={FaDumbbell} ml={1} />
           </Text>
@@ -80,8 +78,8 @@ function Navbar() {
         {({ isActive }) => (
           <Text
             fontWeight="medium"
-            color={isActive ? "blue.500" : textColor}
-            _hover={{ color: "blue.500" }}
+            color={isActive ? "orange.500" : textColor}
+            _hover={{ color: "orange.500" }}
           >
             Add Food <Icon as={FaUtensils} ml={1} />
           </Text>
@@ -92,8 +90,8 @@ function Navbar() {
         {({ isActive }) => (
           <Text
             fontWeight="medium"
-            color={isActive ? "blue.500" : textColor}
-            _hover={{ color: "blue.500" }}
+            color={isActive ? "orange.500" : textColor}
+            _hover={{ color: "orange.500" }}
           >
             Progress Graph <Icon as={FaChartLine} ml={1} />
           </Text>
@@ -104,8 +102,8 @@ function Navbar() {
         {({ isActive }) => (
           <Text
             fontWeight="medium"
-            color={isActive ? "blue.500" : textColor}
-            _hover={{ color: "blue.500" }}
+            color={isActive ? "orange.500" : textColor}
+            _hover={{ color: "orange.500" }}
           >
             My Workouts <Icon as={FaFire} ml={1} />
           </Text>
@@ -201,7 +199,7 @@ function Navbar() {
           {/* Avatar Menu */}
           <Menu>
             <MenuButton>
-              <Avatar size="sm" src={preview} boxSize="41px" name={name} />
+              <Avatar size="sm" src={user.avatar || defaultAvatar} boxSize="41px" name={user.name} />
             </MenuButton>
             <MenuList>
               <MenuItem onClick={() => navigate("/profile")}>My Profile <Icon as={FiUser} ml={1} /> </MenuItem>
@@ -242,7 +240,7 @@ function Navbar() {
               <Text
       fontWeight="medium"
       color={textColor}
-      _hover={{ color: "blue.500", cursor: "pointer" }}
+      _hover={{ color: "orange.500", cursor: "pointer" }}
       display={{ base: "flex", md: "none" }}
       onClick={() => {
         onClose();

@@ -29,10 +29,10 @@ const fitnessSchema = new mongoose.Schema({
       min : [0, 'Reps cannot be negative'],
       default : null
   },
-  equipmentWeight : {
-      type : Number,
-      min : [0, 'Weight cannot be negative'],
-      default : null
+  intensity : {
+    type : String,
+    enum : ['Low', 'Medium', 'High'],
+    default : null
   },
   distance : {
       type : Number,

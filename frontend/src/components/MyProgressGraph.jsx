@@ -29,7 +29,7 @@ import axios from 'axios';
 
 function MyProgressGraph() {
   const { workouts } = workoutState();
-  const { cardBg, textColor } = useThemeValues();
+  const { cardBg, textColor, tooltipBg, tooltipColor} = useThemeValues();
   const [nutritionData, setNutritionData] = useState([]);
 
 
@@ -142,8 +142,11 @@ useEffect(() => {
 
       {hasData ? (
         <Box  mx="auto" w="95%" maxW="1200px" mb={8} mt={6} borderRadius="xl" boxShadow="md">
-          <Text color={textColor}>Calories burned vs consumed per day in <span style={{ fontWeight: 'bold'}}>{format(new Date(), 'MMMM yyyy')}</span> </Text>
-         <ResponsiveContainer width="100%" height={300}>
+          <Text color={textColor}>Calories burned vs consumed per day in {" "}
+<Text as="span" fontWeight="bold" color="orange.500">
+    {format(new Date(), "MMMM yyyy")}
+  </Text></Text>         
+  <ResponsiveContainer width="100%" height={300}>
   <BarChart
     data={monthlyData}
     barCategoryGap={2}
@@ -163,14 +166,17 @@ useEffect(() => {
     key={cardBg}
     formatter={(value, name) => [`${Number(value).toFixed(2)} kcal`, name]} 
     contentStyle={{
-    backgroundColor: cardBg
+    backgroundColor: tooltipBg,
+    color: tooltipColor,
+    padding: "8px",
+    borderRadius: "6px",
   }}
     
     />
     <Legend />
       
-    <Bar dataKey="burned" fill="#8884d8" name="Calories Burned" radius={[6, 6, 0, 0]} />
-    <Bar dataKey="consumed" fill="#82ca9d" name="Calories Consumed" radius={[6, 6, 0, 0]} />
+    <Bar dataKey="burned" fill="#ED8936" name="Calories Burned" radius={[6, 6, 0, 0]} />
+    <Bar dataKey="consumed" fill="#805AD5" name="Calories Consumed" radius={[6, 6, 0, 0]} />
   </BarChart>
   
 </ResponsiveContainer>
@@ -196,8 +202,8 @@ useEffect(() => {
               colorScheme="blue"
               as={NavLink}
               to="/workoutForm"
-              bgGradient="linear(to-r, purple.400, blue.400)"
-              _hover={{ bgGradient: 'linear(to-r, purple.500, blue.500)' }}
+             bgGradient="linear(to-r, orange.400)"
+            _hover={{ bgGradient: "linear(to-r, orange.500)" }}
             >
               Go to Workout Tracker
             </Button>
@@ -211,8 +217,8 @@ useEffect(() => {
           w={"150px"}
             colorScheme="blue"
             onClick={() => window.print()}
-            bgGradient="linear(to-r, purple.400, blue.400)"
-            _hover={{ bgGradient: 'linear(to-r, purple.500, blue.500)' }}
+           bgGradient="linear(to-r, orange.400)"
+            _hover={{ bgGradient: "linear(to-r, orange.500)" }}
             
           >
             Print

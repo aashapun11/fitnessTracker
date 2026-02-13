@@ -7,12 +7,18 @@ import {
   Text,
   Heading,
   VStack,
-  HStack,
   useToast
 } from "@chakra-ui/react";
 
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem
+} from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+
 import useThemeValues from "../hooks/useThemeValues";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { workoutState } from "../Context/WorkoutProvider";
 import axios from "axios";
@@ -22,8 +28,6 @@ import StreakRewardModal from "./StreakRewardModal";
 import useSound from 'use-sound';
 import streakSound from '/sound/streak.mp3';
 
- 
-
 function WorkoutForm() {
   const [formData, setFormData] = useState({
     date: "",
@@ -32,14 +36,12 @@ function WorkoutForm() {
     duration: "",
     sets: "",
     reps: "",
-    equipmentWeight: "",
-
+    intensity: ""
   }); 
 
   const activityOptions = {
     Cardio: ["Running", "Cycling", "Walking", "Swimming", "Plank"],
-    Strength: ["Pushups", "MountainClimb", "Burpees", "Squats","JumpingJacks", "Pullups", "Lunges"],
-    WeightTraining: ["Deadlifts", "BenchPress", "DumpbellPress", "LegPress"],
+    Strength: ["Pushups", "MountainClimb", "Burpees", "Squats","JumpingJacks", "Pullups", "Lunges"]
   }
 
   const toast = useToast();
@@ -47,7 +49,7 @@ function WorkoutForm() {
 
   const { workouts, setWorkouts, user, setUser } = workoutState();
 
-  const { cardBg, inputBg, textColor } = useThemeValues();
+  const { bg, cardBg, inputBg, textColor,inputTextColor } = useThemeValues();
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   const [playStreakSound] = useSound(streakSound);
@@ -57,47 +59,11 @@ function WorkoutForm() {
   const submitHandler = async(e) => {
     e.preventDefault();
 
-const { date, activity, exercise_type, duration, sets, reps, equipmentWeight} = formData;
-if(exercise_type === "Cardio"){
-  if (!date || !activity || !duration) {
-      toast({
-        title: "Please fill in all fields.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-} 
-else if(exercise_type === "Strength"){
-  if (!date || !activity || !sets || !reps) {
-    toast({
-      title: "Please fill in all fields.",
-      status: "warning",
-      duration: 3000,
-      isClosable: true,
-    });
-    return;
-  }
-}
-else if(exercise_type === "WeightTraining"){
-  if (!date || !activity ||  !sets || !reps || !equipmentWeight) {
-    toast({
-      title: "Please fill in all fields.",
-      status: "warning",
-      duration: 3000,
-      isClosable: true,
-    });
-    return;
-  }
-}
-    
-    
-    
+const { date, activity, exercise_type, duration, sets, reps, intensity} = formData;
 
-   let calories = 0;
+let calories = 0;
 
-    calories = CalorieCalculate({ activity, duration, exercise_type, sets, reps, equipmentWeight, user });
+calories = CalorieCalculate({ activity, duration, exercise_type, intensity, user });
     
 
 const workoutData = {
@@ -107,7 +73,7 @@ const workoutData = {
   duration: Number(duration),
   sets: sets ? Number(sets) : null,
   reps: reps ? Number(reps) : null,
-  equipmentWeight: equipmentWeight ? Number(equipmentWeight) : null,
+  intensity: intensity ? (intensity) : null,
   calories: calories
 };
     
@@ -174,7 +140,7 @@ setFormData({
   duration: "",
   sets: "",
   reps: "",
-  equipmentWeight: ""
+  intensity: ""
 });
     
   };
@@ -213,10 +179,11 @@ setFormData({
 
   return (
     <Box
-      
-      p={4}
+    
       textAlign={"center"}
       color={textColor}
+      minH="100vh"
+      
     >
   
   <Navbar/>
@@ -244,9 +211,9 @@ setFormData({
               onChange={changeHandler}
               placeholder="Enter today's date"
               bg={inputBg}
-              _placeholder={{ color: "blackAlpha.800" }}
-              color={textColor}
-              border="1px solid blackAlpha.300"
+              color={inputTextColor}
+              baseStyle="primary"
+              required
             />
 {/* Exercise Type */}
             <Select
@@ -256,13 +223,15 @@ setFormData({
               onChange={changeHandler}
               placeholder="Select exercise type"
               bg={inputBg}
-              color={textColor}
+              color={inputTextColor}
               border="1px solid blackAlpha.300"
+              required
             >
-              <option style={{ color: "black" }} value="Cardio">Cardio</option>
-               <option style={{ color: "black" }} value="Strength">Strength</option>
-              <option style={{ color: "black" }} value="WeightTraining">Weight Training</option>
+              <option value="Cardio"  >Cardio</option>
+               <option value="Strength">Strength</option>
             </Select>
+
+        
 
 {/* Exercise activity as per the exercise_type */}
 {formData.exercise_type &&(
@@ -273,8 +242,9 @@ setFormData({
     onChange={changeHandler}
     placeholder={`Enter ${formData.exercise_type} activity`}
     bg={inputBg}
-    color={textColor}
+    color={inputTextColor}
     border="1px solid blackAlpha.300"
+    required
   >
     {activityOptions[formData.exercise_type]?.map((activity) => (
       <option style={{ color: "black" }} key={activity} value={activity}>
@@ -283,38 +253,62 @@ setFormData({
     ))}
     </Select>
 
-
-
 )}
-        
 
-            {/* Show these fields conditionally */}
 {formData.exercise_type === "Cardio" && (
   <>
- 
   <Input
+    name="duration"
+    type="text"
+    value={formData.duration}
+    onChange={changeHandler}
+    placeholder="Duration (in minutes)"
+    bg={inputBg}
+    color={inputTextColor}
+                  variant="outline"
+
+    required
+  />
+  </>
+)}
+        
+{formData.exercise_type === "Strength" && (
+  <>
+  <Select
+    name="intensity"
+    type="text"
+    value={formData.intensity}
+    onChange={changeHandler}
+    placeholder="How hard was it?"
+    bg={inputBg}
+    color={inputTextColor}
+    border="1px solid blackAlpha.300"
+    required
+  >
+    <option style={{ color: "black" }} value="Low">Low</option>
+    <option style={{ color: "black" }} value="Medium">Medium</option>
+    <option style={{ color: "black" }} value="High">High</option>
+  </Select>
+
+   <Input
     name="duration"
     type="number"
     value={formData.duration}
     onChange={changeHandler}
     placeholder="Duration (in minutes)"
     bg={inputBg}
-    color={textColor}
+    color={inputTextColor}
     border="1px solid blackAlpha.300"
+    required
   />
-  </>
-)}
-
-{formData.exercise_type === "Strength" && (
-  <>
     <Input
       name="sets"
       type="number"
       value={formData.sets}
       onChange={changeHandler}
-      placeholder="Sets"
+      placeholder="Sets (optional)"
       bg={inputBg}
-      color={textColor}
+      color={inputTextColor}
       border="1px solid blackAlpha.300"
     />
     <Input
@@ -322,55 +316,18 @@ setFormData({
       type="number"
       value={formData.reps}
       onChange={changeHandler}
-      placeholder="Reps"
+      placeholder="Reps (optionla)"
       bg={inputBg}
-      color={textColor}
+      color={inputTextColor}
       border="1px solid blackAlpha.300"
+      
     />
    
   </>
 )}
-
-{formData.exercise_type === "WeightTraining" && (
-  <>
-    <Input
-      name="sets"
-      type="number"
-      value={formData.sets}
-      onChange={changeHandler}
-      placeholder="Sets"
-      bg={inputBg}
-      color={textColor}
-      border="1px solid blackAlpha.300"
-    />
-    <Input
-      name="reps"
-      type="number"
-      value={formData.reps}
-      onChange={changeHandler}
-      placeholder="Reps"
-      bg={inputBg}
-      color={textColor}
-      border="1px solid blackAlpha.300"
-    />
-    <Input
-      name="equipmentWeight"
-      type="number"
-      value={formData.equipmentWeight}
-      onChange={changeHandler}
-      placeholder="Weight of Equipment (kg)"
-      bg={inputBg}
-      color={textColor}
-      border="1px solid blackAlpha.300"
-    />
-  </>
-)}
-
             <Button
               type="submit"
-              bgGradient="linear(to-r, purple.400, blue.400)"
-              _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-              color={textColor}
+              variant="primary"
               w="100%"
             >
               Add Exercise

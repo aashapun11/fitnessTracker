@@ -7,13 +7,15 @@ import {
 import { useSearchParams , useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
+import useThemeValues from "../../hooks/useThemeValues";
 
 function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const {textColor, inputTextColor } = useThemeValues();
 
 
 const [searchParams] = useSearchParams();
@@ -56,7 +58,7 @@ const token = searchParams.get("token"); // ✅ Correct for query param
   };
 
   return (
-    <Box maxW="400px" mx="auto" mt={10}>
+    <Box maxW="400px" mx="auto" mt={10} color={textColor}>
       <Heading mb={4}>Reset Password</Heading>
       <form onSubmit={handleReset}>
         <FormControl mb={4}>
@@ -67,6 +69,7 @@ const token = searchParams.get("token"); // ✅ Correct for query param
             type = {showPassword ? "text" : "password"}
             value= {password}
             onChange={(e) => setPassword(e.target.value)}
+            color={inputTextColor}
             required
           />
           <InputRightElement width="3rem">
@@ -91,6 +94,7 @@ const token = searchParams.get("token"); // ✅ Correct for query param
             type = {showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            color={inputTextColor}
             required
           />
           <InputRightElement width="3rem">
@@ -106,10 +110,8 @@ const token = searchParams.get("token"); // ✅ Correct for query param
                     </InputRightElement>
           </InputGroup>
         </FormControl>
-        <Button type="submit" colorScheme="blue"
-        variant="solid"
-        size="md"
-        borderRadius="md"
+        <Button type="submit" 
+        variant="primary"
         width={"full"}
         >Reset Password</Button>
       </form>

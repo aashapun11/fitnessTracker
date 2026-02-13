@@ -17,6 +17,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { BellIcon } from "@chakra-ui/icons";
+import useThemeValues from "../hooks/useThemeValues";
 
 export default function Notifications({
   notifications,
@@ -28,6 +29,8 @@ export default function Notifications({
 
   // ✅ Detect mobile/desktop
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const {iconColor, textColor} = useThemeValues();
 
   return (
     <>
@@ -64,7 +67,7 @@ export default function Notifications({
             as={IconButton}
             icon={
               <Box position="relative">
-                <BellIcon boxSize={9} />
+                <BellIcon boxSize={9} color={iconColor} />
                 {unreadCount > 0 && (
                   <Badge
                     colorScheme="red"
@@ -86,7 +89,7 @@ export default function Notifications({
           />
           <MenuList maxH="350px" overflowY="auto" p={0} minW="300px">
             {notifications.length === 0 ? (
-              <Box p={4} textAlign="center" color="gray.500">
+              <Box p={4} textAlign="center" color={textColor}>
                 No notifications
               </Box>
             ) : (
@@ -129,7 +132,7 @@ export default function Notifications({
           <DrawerContent>
             <DrawerBody p={0}>
               {notifications.length === 0 ? (
-                <Box p={4} textAlign="center" color="gray.500">
+                <Box p={4} textAlign="center" color={textColor}>
                   No notifications
                 </Box>
               ) : (

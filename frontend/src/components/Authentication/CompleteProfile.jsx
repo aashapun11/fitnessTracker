@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState} from "react";
 import {
   Box,
   Button,
@@ -13,11 +13,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { workoutState } from "../../Context/WorkoutProvider"; // adjust path as needed
+import useThemeValues from "../../hooks/useThemeValues";
 
 function CompleteProfile() {
   const toast = useToast();
   const navigate = useNavigate();
   const { setUser } = workoutState();
+  const {textColor, inputTextColor} = useThemeValues();
 
   const [profileData, setProfileData] = useState({
     age: "",
@@ -118,7 +120,7 @@ function CompleteProfile() {
   };
 
   return (
-    <Box maxW="500px" mx="auto" mt={10} p={6} borderRadius="2xl" boxShadow="xl">
+    <Box maxW="500px" mx="auto" mt={10} p={6} borderRadius="2xl" boxShadow="xl" color={textColor}>
       <Heading textAlign="center" mb={6}>
         Complete Your Profile
       </Heading>
@@ -132,6 +134,7 @@ function CompleteProfile() {
               min={1}
               value={profileData.age}
               onChange={handleChange}
+              color={inputTextColor}
             />
           </FormControl>
 
@@ -143,6 +146,7 @@ function CompleteProfile() {
               min={1}
               value={profileData.height}
               onChange={handleChange}
+              color={inputTextColor}
             />
           </FormControl>
 
@@ -154,6 +158,7 @@ function CompleteProfile() {
               min={1}
               value={profileData.weight}
               onChange={handleChange}
+              color={inputTextColor}
             />
           </FormControl>
 
@@ -164,6 +169,7 @@ function CompleteProfile() {
               value={profileData.sex}
               onChange={handleChange}
               placeholder="Select sex"
+              color={inputTextColor}
             >
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -174,9 +180,7 @@ function CompleteProfile() {
           <Button
             type="submit"
             width="100%"
-            bgGradient="linear(to-r, purple.400, blue.400)"
-            color="white"
-            _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
+           variant={"primary"}
           >
             Save Profile
           </Button>

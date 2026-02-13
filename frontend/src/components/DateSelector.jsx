@@ -32,8 +32,7 @@ function DateSelector({ selectedDate, setSelectedDate }) {
         <HStack spacing={2}>
         <Button
         onClick={handleClick}
-        colorScheme="blue"
-        variant="solid"
+        variant="primary"
         size="md"
         borderRadius="md"
         

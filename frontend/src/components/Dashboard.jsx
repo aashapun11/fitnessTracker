@@ -35,7 +35,7 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const { user, workouts } = workoutState();
-  const {textColor,  cardBg } = useThemeValues();
+  const {textColor,  cardBg, tooltipBg, tooltipColor } = useThemeValues();
   const [waterToday, setWaterToday] = useState(0);
   const [items, setItems] = useState([]);
       const [preview, setPreview] = useState(user?.avatar || "");
@@ -382,10 +382,17 @@ const mergeWeeklyData = () => {
 <LineChart data={mergeWeeklyData()}>
   <XAxis dataKey="label" />
   <YAxis label={{ value: "kcal", angle: -90, position: "insideLeft" }} />
-  <Tooltip formatter={(value) => `${value} kcal`} />
+  <Tooltip formatter={(value) => `${value} kcal`} 
+     contentStyle={{
+    backgroundColor: tooltipBg,
+    color: tooltipColor,
+    padding: "8px",
+    borderRadius: "6px",
+  }}
+    />
   <Legend />
-  <Line type="monotone" dataKey="burned" stroke="#360bf3ff" name="Calories Burned" />
-  <Line type="monotone" dataKey="consumed" stroke="#da0eadff" name="Calories Consumed" />
+  <Line type="monotone" dataKey="burned" stroke="#ED8936" name="Calories Burned" />
+  <Line type="monotone" dataKey="consumed" stroke="#805AD5" name="Calories Consumed" />
 </LineChart>
 
 </ResponsiveContainer>

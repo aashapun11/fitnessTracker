@@ -16,7 +16,7 @@ function VerificationPending() {
   const toast = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-const { cardBg, inputBg, textColor } = useThemeValues();
+const {cardBg, inputBg, textColor, inputTextColor } = useThemeValues();
   
 
   const handleResend = async () => {
@@ -58,10 +58,10 @@ const { cardBg, inputBg, textColor } = useThemeValues();
   };
 
   return (
-    <Box minH="100vh" display="flex" alignItems="center" justifyContent="center"  p={4}>
+    <Box minH="100vh" display="flex" alignItems="center" justifyContent="center" color={textColor}  p={4}>
       <Box maxW="md" p={6} borderRadius="xl"  shadow="lg" textAlign="center" bg={cardBg}>
         <Image
-          src="/email.png" // Replace with your image path or icon
+        src="/email.png"
           alt="Email expired"
           mx="auto"
           boxSize="120px"
@@ -77,7 +77,7 @@ const { cardBg, inputBg, textColor } = useThemeValues();
           value={email}
           type="email"
           bg={inputBg}
-          color={textColor}
+          color={inputTextColor}
 
           onChange={(e) => setEmail(e.target.value)}
         border="1px solid blackAlpha.300"
@@ -87,14 +87,12 @@ const { cardBg, inputBg, textColor } = useThemeValues();
         />
 
         <Button
-          colorScheme="blue"
           onClick={handleResend}
           isLoading={loading}
           mb={2}
           w="100%"
-           bgGradient="linear(to-r, purple.400, blue.400)"
-              _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-              color={textColor}
+          variant="primary"
+          size="md"
         >
           Resend Verification Link
         </Button>

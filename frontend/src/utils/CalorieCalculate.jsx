@@ -1,7 +1,7 @@
 
 
 
-const CalorieCalculate = ({ activity, duration, exercise_type, sets = 0, reps = 0, equipmentWeight = 0, user }) => {
+const CalorieCalculate = ({ activity, duration, exercise_type, sets = 0, reps = 0, intensity, user }) => {
   if(!user) return 0;
   const { age, sex, weight: userWeight, height } = user;
 
@@ -10,6 +10,11 @@ const CalorieCalculate = ({ activity, duration, exercise_type, sets = 0, reps = 
     Cycling: 7.5,
     Swimming: 8.0,
     Walking: 3.5,
+  };
+   const STRENGTH_MET = {
+    Low: 3.5,
+    Medium: 5.0,
+    High: 6.5,
   };
 
   if (!age || !sex || !userWeight || !height) return 0;
@@ -29,13 +34,13 @@ const CalorieCalculate = ({ activity, duration, exercise_type, sets = 0, reps = 
   }
 
   else if (exercise_type === "Strength") {
-    calories = sets * reps * 0.35;
-  }
+    if(!intensity) return 0;
+    
+  const met = STRENGTH_MET[intensity || "moderate"];
+  const durationHours = duration / 60;
 
-  else if (exercise_type === "WeightTraining") {
-    calories = sets * reps * equipmentWeight * 0.03;
+  calories = met * userWeight * durationHours;
   }
-
 
   return calories.toFixed(2);
 };

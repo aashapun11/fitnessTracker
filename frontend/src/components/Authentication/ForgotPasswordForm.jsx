@@ -1,13 +1,15 @@
 // pages/auth/ForgotPasswordForm.jsx
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   Box, Input, Button, FormControl, FormLabel, Heading, useToast
 } from "@chakra-ui/react";
 import axios from "axios";
+import useThemeValues from "../../hooks/useThemeValues";
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const toast = useToast();
+  const {textColor, inputTextColor} = useThemeValues();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ function ForgotPasswordForm() {
   };
 
   return (
-    <Box maxW="400px" mx="auto" mt={10}>
+    <Box maxW="400px" mx="auto" mt={10} color={textColor}>
       <Heading mb={4}>Forgot Password</Heading>
       <form onSubmit={handleSubmit}>
         <FormControl mb={4}>
@@ -43,14 +45,12 @@ function ForgotPasswordForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            color={inputTextColor}
             required
           />
         </FormControl>
         <Button type="submit"    
-        colorScheme="blue"
-        variant="solid"
-        size="md"
-        borderRadius="md"
+        variant="primary"
         width="100%">Send Reset Link</Button>
       </form>
     </Box>

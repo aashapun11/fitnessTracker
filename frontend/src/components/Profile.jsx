@@ -19,6 +19,7 @@ import {
   import {useNavigate} from "react-router-dom"
   import { workoutState } from "../Context/WorkoutProvider";
   import { FiCamera } from "react-icons/fi";
+  import useThemeValues from "../hooks/useThemeValues";
   
   function ProfilePage() {
 
@@ -27,6 +28,7 @@ import {
     const [selectedFile, setSelectedFile] = useState(null);
      const toast = useToast();
     const navigate = useNavigate();
+    const {textColor, inputTextColor} = useThemeValues();
 
     const [formData, setFormData] = useState({
   name: "",
@@ -83,7 +85,6 @@ import {
             duration: 3000,
             isClosable: true,
           })
-          navigate("/workoutList");
         } catch (error) {
           console.error(error);
           toast({
@@ -138,11 +139,19 @@ import {
         }
       );
 
+    // get secure_url from response
+    const secureUrl = res.data.secure_url;
 
-      
-const updatedUser = { ...user, avatar: res.secure_url };
-setUser(updatedUser);
-localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+    // update preview immediately
+    setPreview(secureUrl);
+
+    // update formData so save includes new avatar
+    setFormData((prev) => ({ ...prev, avatar: secureUrl }));
+
+    // update local user state and localStorage
+    const updatedUser = { ...user, avatar: secureUrl };
+    setUser(updatedUser);
+    localStorage.setItem("userInfo", JSON.stringify(updatedUser));
 
             
      toast({
@@ -176,7 +185,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
     return (
       <>
         <Navbar />
-        <Box p={6} maxW="700px" mx="auto" textAlign="center">
+        <Box p={6} maxW="700px" mx="auto" textAlign="center" color={textColor}>
           <Heading fontSize="xl" mb={4}>
             Basic Information
           </Heading>
@@ -212,7 +221,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
 
           </Box>
           {/* Username display */}
-  <Text mt={4} fontSize="xl" fontWeight="semibold">
+  <Text mt={4} fontSize="xl" color={"orange.500"} fontWeight="semibold">
     @{user.username}
   </Text>
           
@@ -226,6 +235,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  color={inputTextColor}
                 />
               </FormControl>
   
@@ -236,6 +246,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
                     name="weight"
                     value={formData.weight}
                     onChange={handleChange}
+                    color={inputTextColor}
                   />
                 </FormControl>
   
@@ -245,6 +256,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
                     name="height"
                     value={formData.height}
                     onChange={handleChange}
+                    color={inputTextColor}
                   />
                 </FormControl>
   
@@ -254,6 +266,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
                     name="age"
                     value={formData.age}
                     onChange={handleChange}
+                    color={inputTextColor}
                   />
                 </FormControl>
               </SimpleGrid>
@@ -264,6 +277,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
                   name="sex"
                   value={formData.sex}
                   onChange={handleChange}
+                  color={inputTextColor}
                 >
                   <option value="">Select</option>
                   <option value="male">Male</option>
@@ -275,9 +289,7 @@ localStorage.setItem("userInfo", JSON.stringify(updatedUser));
                 type="submit"
                 w="50%"
                 mt={4}
-                bgGradient="linear(to-r, purple.400, blue.400)"
-                _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-                color="white"
+               variant={"primary"}
               >
                 Save
               </Button>

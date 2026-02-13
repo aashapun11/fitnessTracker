@@ -25,7 +25,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 function LoginForm() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const toast = useToast();
-  const { cardBg, inputBg, textColor } = useThemeValues();
+  const { cardBg, inputBg, textColor , inputTextColor} = useThemeValues();
   const navigate = useNavigate();
   const { setUser } = workoutState();
   const [showPassword, setShowPassword] = useState(false);
@@ -206,13 +206,13 @@ const handleGoogleLogin = useGoogleLogin({
     textAlign="center"
   >
         <Heading mb={2} color={textColor}>Login</Heading>
-        <Text mb={2}>Don't have an account? <Link 
+        <Text mb={2} color={textColor}>Don't have an account? <Link 
     href="/signup" 
     fontWeight="bold" 
     fontSize="lg" 
     textDecoration="underline"
-    color={textColor}
-    _hover={{ color: "blue.700" }}
+    color="orange.400"
+    _hover={{ color: "orange.700" }}
   >  Sign Up
   </Link></Text>
         <form onSubmit={handleSubmit}>
@@ -221,7 +221,7 @@ const handleGoogleLogin = useGoogleLogin({
               name="username"
               placeholder="Username"
               bg={inputBg}
-              color={textColor}
+              color={inputTextColor}
               border="1px solid blackAlpha.300"
               value={formData.username}
               onChange={handleChange}
@@ -232,7 +232,7 @@ const handleGoogleLogin = useGoogleLogin({
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             bg={inputBg}
-            color={textColor}
+            color={inputTextColor}
             border="1px solid blackAlpha.300"
             value={formData.password}
             onChange={handleChange}
@@ -253,9 +253,7 @@ const handleGoogleLogin = useGoogleLogin({
             <Button
               type="submit"
               w="100%"
-              bgGradient="linear(to-r, purple.400, blue.400)"
-              _hover={{ bgGradient: "linear(to-r, purple.500, blue.500)" }}
-              color={textColor}
+             variant={"primary"}
             >
               Login
             </Button>
@@ -287,7 +285,7 @@ const handleGoogleLogin = useGoogleLogin({
         />
       }
       variant="outline"
-      colorScheme="blue"
+      borderRadius="2xl"
       width="100%"
     >
       Sign in with Google
@@ -296,7 +294,7 @@ const handleGoogleLogin = useGoogleLogin({
 
 
             <Text fontSize="sm" textAlign="right">
-  <Link color="blue.500" href="/forgot-password">Forgot Password?</Link>
+  <Link color="orange.400" href="/forgot-password">Forgot Password?</Link>
 </Text>
 
             

@@ -19,7 +19,7 @@ function LightMode() {
     aria-label="Toggle Dark Mode"
     size="sm"
     borderRadius="full"
-    colorScheme="orange"
+    colorScheme="purple"
     boxSize="40px" // Same size as avatar
   />
     </HStack>
