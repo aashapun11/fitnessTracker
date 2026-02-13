@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker Web App — MERN Stack
 
-Fitness Tracker is a full-stack MERN web application that helps users track workouts, nutrition, calories, water intake, and progress — all in one clean and interactive dashboard.
+Fitness Tracker is a full-stack MERN web application that helps users to log the workouts, track the nutrition with real time Spoonacular API and track the progress over time.
 
 🌐 **Live Site:** https://fitnesstracker-frontend-lgz6.onrender.com  
 
@@ -22,14 +22,12 @@ Fitness Tracker is a full-stack MERN web application that helps users track work
   - Duration  
   - Date  
 - Automatic **calorie burn calculation** using MET values
-- Edit & delete workouts
-- Workout history with filters
 - Daily & total calorie burned tracking
 - **Workout streak system** with sound + reward modal
 
 ---
 
-## 🥗 Nutrition Tracking *(New!)*
+## 🥗 Nutrition Tracking
 - Search foods using **Spoonacular API**
 - Fetch:
   - Calories  
@@ -37,21 +35,18 @@ Fitness Tracker is a full-stack MERN web application that helps users track work
   - Serving size + accurate units  
 - Add meals to Breakfast, Lunch, Dinner, Snacks
 - Daily calorie consumed tracking
-- Macro indicators & meal cards
-- Backend validation of units
 
 ---
 
-## 💧 Water Intake Tracking *(New!)*
+## 💧 Water Intake Tracking 
 - Add glasses or mL of water
 - Stored in a **separate MongoDB model**
 - Daily water progress bar
-- Quick-add UI buttons
 
 ---
 
 ## 📊 Data Visualization
-- **7-day calorie burned vs consumed line chart**
+- **7-day  calorie burned vs consumed line chart**
 - **Monthly calorie comparison bar chart**
 - Pie chart for daily macros
 - Progress stats for:
@@ -63,12 +58,10 @@ Fitness Tracker is a full-stack MERN web application that helps users track work
 ---
 
 ## 🧭 Dashboard
-- Today's calories burned & consumed
 - Total water intake
 - Workout streak count
-- Quick-action buttons
-- Dark/Light mode support (Chakra UI)
-- Fully responsive layout
+- Workout and Nutrition Summary
+- 7 days calories burned & consumed
 
 ---
 
@@ -96,9 +89,9 @@ Fitness Tracker is a full-stack MERN web application that helps users track work
 ## 📸 Screenshots
 ![alt text](frontend/assets/dashboard.png)
 ![alt text](frontend/assets/signup.png)
-![alt text](frontend/assets/workoutSummary.png)
+![alt text](frontend/assets/workout.png)
+![alt text](frontend/assets/workoutdetail.png)
 ![alt text](frontend/assets/nutrition.png)
-![alt text](frontend/assets/dashboard.png)
 ![alt text](frontend/assets/progress.png)
 
 
@@ -106,16 +99,13 @@ Fitness Tracker is a full-stack MERN web application that helps users track work
 
 - AI-powered workout plans
 - AI diet suggestions
-- Push notifications
-- Before/after progress photossr
+- Before/after progress photos
 - Premium plan + payment integration
-
 
 ---
 
 ## 🙏 Acknowledgments
 Built with ❤️ by Aasha Pun
-Guidance & code review supported by OpenAI’s ChatGPT 🚀
 
 
 

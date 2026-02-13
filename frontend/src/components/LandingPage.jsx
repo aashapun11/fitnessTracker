@@ -107,7 +107,7 @@ const LandingPage = () => {
             </Link>
           </MotionText>
 
-          <Button as={Link} to="/signup" colorScheme="orange" borderRadius="full" size="lg">
+          <Button as={Link} to="/signup" variant={"primary"}>
             Get Started
           </Button>
         </VStack>
