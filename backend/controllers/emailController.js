@@ -43,8 +43,8 @@ const emailController = {
        html: `
   <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 24px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;">
     <div style="text-align: center;">
-      <img src="https://res.cloudinary.com/ddwrv4g2i/image/upload/v1749053491/ypx48aydobsrvovpn67n.png" alt="Fitness Tracker Logo" style="width: 100px; margin-bottom: 20px;" />
-      <h2 style="color: #1E74BB; margin-bottom: 10px;">
+      <img src="https://res.cloudinary.com/dvc2hq2gi/image/upload/v1771083709/logo_dfob8p.png" alt="Fitness Tracker Logo" style="width: 100px; margin-bottom: 20px;" />
+      <h2 style="color: #805AD5; margin-bottom: 10px;">
         Welcome to <strong>Fitness Tracker 💪</strong>
       </h2>
     </div>
@@ -54,7 +54,7 @@ const emailController = {
     </p>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="${verificationLink}" style="background-color: #1E74BB; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+      <a href="${verificationLink}" style="background-color: #805AD5; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
         Verify Now
       </a>
     </div>
