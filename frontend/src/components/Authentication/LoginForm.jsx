@@ -18,7 +18,7 @@ import {
 import useThemeValues from "../../hooks/useThemeValues"; // assuming you have this hook
 import axios from "axios";
 import { useNavigate} from "react-router-dom";
-import LightMode from "../LightMode";
+import LoginSignupNavbar from "./LoginSignupNavbar";
 import { workoutState } from "../../Context/WorkoutProvider";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -186,10 +186,9 @@ const handleGoogleLogin = useGoogleLogin({
 
   return (
     <Box p={2} textAlign={"center"}>
-     <LightMode />
-     
-
+      <LoginSignupNavbar/>     
     <Flex 
+    mt={2}
   minH="80vh" 
   align="center" 
   justify="center"
@@ -201,7 +200,7 @@ const handleGoogleLogin = useGoogleLogin({
     maxW="400px"
     bg={cardBg}
     borderRadius="2xl"
-    p={{ base: 4, md: 6 }} // more padding on bigger screens
+    p={{ base: 2, md: 4 }} // more padding on bigger screens
     boxShadow="2xl"
     textAlign="center"
   >

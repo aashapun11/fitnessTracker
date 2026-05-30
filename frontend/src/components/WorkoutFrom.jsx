@@ -212,7 +212,6 @@ setFormData({
               placeholder="Enter today's date"
               bg={inputBg}
               color={inputTextColor}
-              baseStyle="primary"
               required
             />
 {/* Exercise Type */}

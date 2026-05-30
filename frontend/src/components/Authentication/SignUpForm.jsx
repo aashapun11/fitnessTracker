@@ -22,6 +22,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { workoutState } from "../../Context/WorkoutProvider";
+import LoginSignupNavbar from "./LoginSignupNavbar";
 
 
 function SignUpForm() {
@@ -186,8 +187,9 @@ function SignUpForm() {
 
   return (
     <Box p={2} textAlign={"center"}>
+      <LoginSignupNavbar />
 
-    <Box p={4} maxW="500px" mx="auto" bg={cardBg} borderRadius="2xl" boxShadow="2xl">
+    <Box mt={4} p={4} maxW="500px" mx="auto" bg={cardBg} borderRadius="2xl" boxShadow="2xl">
       <Heading textAlign="center" mb={2} color={textColor}>
         Sign Up
       </Heading>

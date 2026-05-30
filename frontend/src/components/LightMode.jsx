@@ -11,7 +11,7 @@ function LightMode() {
     //  useColorModeValue derives theme values based on the current color mode.
 
   return (
-    <HStack w="full" justifyContent="flex-end">
+    <HStack  justifyContent="flex-end">
 
     <IconButton
     icon={colorMode === "light" ? <FaMoon /> : <FaSun />}
